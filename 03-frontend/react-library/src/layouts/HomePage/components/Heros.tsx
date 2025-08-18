@@ -70,3 +70,29 @@ export const Heros = () => {
     </div>
     );
 }
+
+
+// | 类名                                   | 来源        | 含义 / 效果                                     |
+// | ------------------------------------ | --------- | ------------------------------------------- |
+// | **d-none**                           | Bootstrap | 隐藏元素（display\:none）                         |
+// | **d-lg-block**                       | Bootstrap | 在大屏 (≥992px) 显示为 block                      |
+// | **d-lg-none**                        | Bootstrap | 在大屏 (≥992px) 隐藏，在小屏显示                       |
+// | **row**                              | Bootstrap | 栅格系统的一行                                     |
+// | **col-sm-6**                         | Bootstrap | 小屏 (≥576px) 占 6/12 宽度                       |
+// | **col-md-6**                         | Bootstrap | 中屏 (≥768px) 占 6/12 宽度                       |
+// | **col-4**                            | Bootstrap | 超小屏占 4/12 宽度                                |
+// | **col-md**                           | Bootstrap | 自动调整宽度的列                                    |
+// | **g-0**                              | Bootstrap | grid gap = 0（去掉列间距）                         |
+// | **mt-5**                             | Bootstrap | margin-top: 3rem (≈80px)                    |
+// | **ml-2**                             | Bootstrap | margin-left: 0.5rem                         |
+// | **m-2**                              | Bootstrap | margin: 0.5rem (四周)                         |
+// | **container**                        | Bootstrap | 居中容器，宽度随屏幕大小调整                              |
+// | **d-flex**                           | Bootstrap | display\:flex                               |
+// | **justify-content-center**           | Bootstrap | Flex 容器 → 水平居中                              |
+// | **align-items-center**               | Bootstrap | Flex 容器 → 垂直居中                              |
+// | **lead**                             | Bootstrap | 大号/浅色正文段落样式                                 |
+// | **btn**                              | Bootstrap | 按钮基础样式                                      |
+// | **btn-lg**                           | Bootstrap | 大号按钮                                        |
+// | **text-white**                       | Bootstrap | 字体颜色 = 白色                                   |
+// | **main-color**                       | 自定义       | 你自己定义的按钮背景色（比如主题色）                          |
+// | **col-image-left / col-image-right** | 自定义       | 你定义的背景图容器（常见写法：`background-image + height`） |
