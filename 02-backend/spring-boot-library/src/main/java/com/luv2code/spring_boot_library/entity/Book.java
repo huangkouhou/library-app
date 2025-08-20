@@ -2,16 +2,19 @@
 //Hibernate/JPA 会用它把表里的每一行变成一个 Book 对象、或把对象保存为一行。
 package com.luv2code.spring_boot_library.entity;
 
+//用 Lombok 的 @Data 自动生成 getter/setter、equals、hashCode、toString。
 import lombok.Data;  
+//引入 JPA 注解（@Entity、@Id 等）。
 import jakarta.persistence.*;
 
-@Entity
-@Table(name = "book")
-@Data
+@Entity //JPA/Hibernate：这是一个要持久化的实体类，对应数据库的一张表
+@Table(name = "book") //明确表名 就是 book。
+@Data //省去样板代码。注意它会用所有字段生成 equals/hashCode 和 toString
 public class Book {
 
-    @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
+    @Id //主键。
+    @GeneratedValue(strategy =  GenerationType.IDENTITY)//使用数据库的 自增（MySQL 的 AUTO_INCREMENT）来生成主键。
+    
     @Column(name = "id")
     private Long id;
 
