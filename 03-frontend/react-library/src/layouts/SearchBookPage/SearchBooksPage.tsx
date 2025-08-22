@@ -14,6 +14,8 @@ export const SearchBooksPage = () => {
     const [booksPerPage] = useState(5);
     const [totalAmountOfBooks, setTotalAmountOfBooks] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+    const [search, setSearch] = useState('');
+    const [searchUrl, setSearchUrl] = useState('');
 
 
     // ② 在 useEffect 里，根据“依赖数组”去更新状态
@@ -21,7 +23,13 @@ export const SearchBooksPage = () => {
         const fetchBooks = async() => {
             const baseUrl: string = "http://localhost:8080/api/books";
 
-            const url: string = `${baseUrl}?page=${currentPage - 1}&size=${booksPerPage}`;
+            let url: string = '';
+
+            if (searchUrl === ''){
+                url = `${baseUrl}?page=${currentPage - 1}&size=${booksPerPage}`;
+            } else {
+                url = baseUrl + searchUrl;
+            }
 
             const response = await fetch(url);
 
@@ -61,7 +69,7 @@ export const SearchBooksPage = () => {
         })
         //跳到页面顶部
         window.scrollTo(0, 0);
-    }, [currentPage]); //[...] 依赖数组，决定何时运行：只在首次挂载运行一次；[a, b]：当 a 或 b 变化时运行。省略 []：每次渲染后都运行（少用）。
+    }, [currentPage, searchUrl]); //[...] 依赖数组，决定何时运行：只在首次挂载运行一次；[a, b]：当 a 或 b 变化时运行。省略 []：每次渲染后都运行（少用）。
 
     if (isLoading){
         return (
@@ -75,6 +83,14 @@ export const SearchBooksPage = () => {
                 <p>{httpError}</p>
             </div>
         )
+    }
+
+    const searchHandleChange = () => {
+        if (search === ''){
+            setSearchUrl('');
+        } else {
+            setSearchUrl(`/search/findByTitleContaining?title=${search}&page=0&size=${booksPerPage}`)
+        }
     }
 
     //indexOfLastBook 是当前页在数组中的结束下标（slice 的右开界）indexOfFirstBook 是当前页在数组中的开始下标（slice 的左闭界）
@@ -93,8 +109,10 @@ export const SearchBooksPage = () => {
                     <div className='col-6'>
                         <div className='d-flex'>
                             <input className='form-control me-2' type='search'
-                                placeholder='Search' aria-labelledby='Search'/>
-                            <button className='btn btn-outline-success'>
+                                placeholder='Search' aria-labelledby='Search'
+                                onChange={e => setSearch(e.target.value)}/>
+                            <button className='btn btn-outline-success'
+                                onClick={() => searchHandleChange()}>
                                 Search
                             </button>
                         </div>
@@ -135,20 +153,33 @@ export const SearchBooksPage = () => {
                             </ul>
                         </div>
                     </div>
-                    <div className='mt-3'>
-                        <h5>Number of results: ({totalAmountOfBooks})</h5>
+                    {totalAmountOfBooks > 0 ? (
+                    <>
+                        <div className='mt-3'>
+                            <h5>Number of results: ({totalAmountOfBooks})</h5>
+                        </div>
+                        <p>
+                            {indexOfFirstBook + 1} to {lastItem} of {totalAmountOfBooks} items:
+                        </p>
+                        {/*book={book}：把当前这本书对象作为 props 传给子组件 SearchBook，所以在 SearchBook 里可以通过 props.book 拿到它。*/}
+                        {books.map(book => (
+                            <SearchBook book={book} key={book.id}/>
+                        ))}
+                    </>
+                    ):(
+                    <div className='m-5'>
+                        <h3>
+                            Can't find what you are looking for?
+                        </h3>
+                        <a type='button' className='btn main-color btn-md px-4 me-md-2 fw-bold text-white' 
+                            href='#'>Library Services</a>
                     </div>
-                    <p>
-                        {indexOfFirstBook + 1} to {lastItem} of {totalAmountOfBooks} items:
-                    </p>
-                    {/*book={book}：把当前这本书对象作为 props 传给子组件 SearchBook，所以在 SearchBook 里可以通过 props.book 拿到它。*/}
-                    {books.map(book => (
-                        <SearchBook book={book} key={book.id}/>
-                    ))}
+                    )}
                     {/*Only render <Pagination> if totalPages > 1 */}
                     {totalPages > 1 &&
                         <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate}/>
                     }
+                
                 </div>
             </div>
         </div>
