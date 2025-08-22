@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import BookModel from '../../models/BookModel';
 import { SpinnerLoading } from '../Utils/SpinnerLoading';
 import { SearchBook } from './components/SearchBook';
+import { Pagination } from '../Utils/Pagination';
 
 export const SearchBooksPage = () => {
 
@@ -9,13 +10,18 @@ export const SearchBooksPage = () => {
     const [books, setBooks] = useState<BookModel[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [booksPerPage] = useState(5);
+    const [totalAmountOfBooks, setTotalAmountOfBooks] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+
 
     // ② 在 useEffect 里，根据“依赖数组”去更新状态
     useEffect(() => {//useEffect(() => { ... }, ...) 的回调函数，写副作用逻辑（取数、订阅、定时器等）。
         const fetchBooks = async() => {
             const baseUrl: string = "http://localhost:8080/api/books";
 
-            const url: string = `${baseUrl}?page=0&size=5`;
+            const url: string = `${baseUrl}?page=${currentPage - 1}&size=${booksPerPage}`;
 
             const response = await fetch(url);
 
@@ -27,6 +33,10 @@ export const SearchBooksPage = () => {
 
             const responseData = responseJson._embedded.books;
 
+            setTotalAmountOfBooks(responseJson.page.totalElements);
+            setTotalPages(responseJson.page.totalPages);
+
+            //把变量类型标成“BookModel 的数组”。也就是数组里的每个元素都必须是 BookModel 类型。
             const loadedBooks: BookModel[] = [];
 
             for (const key in responseData){
@@ -49,7 +59,9 @@ export const SearchBooksPage = () => {
             setIsLoading(false);
             setHttpError(error.message);
         })
-    }, []); //[...] 依赖数组，决定何时运行：只在首次挂载运行一次；[a, b]：当 a 或 b 变化时运行。省略 []：每次渲染后都运行（少用）。
+        //跳到页面顶部
+        window.scrollTo(0, 0);
+    }, [currentPage]); //[...] 依赖数组，决定何时运行：只在首次挂载运行一次；[a, b]：当 a 或 b 变化时运行。省略 []：每次渲染后都运行（少用）。
 
     if (isLoading){
         return (
@@ -64,6 +76,15 @@ export const SearchBooksPage = () => {
             </div>
         )
     }
+
+    //indexOfLastBook 是当前页在数组中的结束下标（slice 的右开界）indexOfFirstBook 是当前页在数组中的开始下标（slice 的左闭界）
+    const indexOfLastBook: number = currentPage * booksPerPage;
+    const indexOfFirstBook: number = indexOfLastBook - booksPerPage;
+    let lastItem = booksPerPage * currentPage <= totalAmountOfBooks ?
+        booksPerPage * currentPage : totalAmountOfBooks;
+
+
+    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
     return (
         <div>
@@ -115,14 +136,19 @@ export const SearchBooksPage = () => {
                         </div>
                     </div>
                     <div className='mt-3'>
-                        <h5>Number of results: (22)</h5>
+                        <h5>Number of results: ({totalAmountOfBooks})</h5>
                     </div>
                     <p>
-                        1 to 5 of 22 items:
+                        {indexOfFirstBook + 1} to {lastItem} of {totalAmountOfBooks} items:
                     </p>
+                    {/*book={book}：把当前这本书对象作为 props 传给子组件 SearchBook，所以在 SearchBook 里可以通过 props.book 拿到它。*/}
                     {books.map(book => (
                         <SearchBook book={book} key={book.id}/>
                     ))}
+                    {/*Only render <Pagination> if totalPages > 1 */}
+                    {totalPages > 1 &&
+                        <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate}/>
+                    }
                 </div>
             </div>
         </div>
