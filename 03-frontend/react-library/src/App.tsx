@@ -7,19 +7,23 @@ import { Redirect, Route, Switch } from "react-router-dom"; //v5，Switch 就是
 
 export const App = () => {
   return (
-    <div>
+    <div className="d-flex flex-column min-vh-100">
       <Navbar />
-      <Switch>
-        <Route path="/" exact> {/*Switch 常配合 exact，避免 / 抢先匹配更长路径。*/}
-          <Redirect to='/home' />
-        </Route>
-        <Route path='/home'>
-          <HomePage />
-        </Route>
-        <Route path="/search">
-          <SearchBooksPage />
-        </Route>
-      </Switch>
+      <div className="flex-grow-1">
+        <Switch>
+          <Route path="/" exact>
+            {" "}
+            {/*Switch 常配合 exact，避免 / 抢先匹配更长路径。*/}
+            <Redirect to="/home" />
+          </Route>
+          <Route path="/home">
+            <HomePage />
+          </Route>
+          <Route path="/search">
+            <SearchBooksPage />
+          </Route>
+        </Switch>
+      </div>
       <Footer />
     </div>
   );

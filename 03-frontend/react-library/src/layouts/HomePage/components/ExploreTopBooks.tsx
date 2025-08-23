@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export const ExploreTopBooks = () => {
     return (
         <div className="p-5 mb-4 bg-dark header">
@@ -6,11 +8,14 @@ export const ExploreTopBooks = () => {
                     <div>
                         <h1 className="display-5 fw-bold">Find your next adventure</h1>
                         <p className="col-md-8 fs-4">Where would you like to go next?</p>
-                        <a type="button" className="btn main-color btn-lg text-white" href="#">
+                        <Link type="button" className="btn main-color btn-lg text-white" to="/search">
                             Explore top books
-                        </a>
+                        </Link>
                     </div>
             </div>
         </div>
     );
 }
+
+// 用 Link：只是跳转，不需要“选中态”样式（例如详情页里的“返回列表”）。
+// 用 NavLink：需要根据当前路由高亮/标记（导航栏、侧边栏、分页按钮、Tab）。

@@ -2,6 +2,7 @@ import { ReturnBook } from "./ReturnBook";
 import { useEffect, useState } from 'react';
 import BookModel from "../../../models/BookModel";
 import { SpinnerLoading } from "../../Utils/SpinnerLoading";
+import { Link } from "react-router-dom";
 
 export const Carousel = () => {
     // ① 在组件顶层定义状态
@@ -120,9 +121,12 @@ export const Carousel = () => {
                     </div>
                 </div>
                 <div className="homepage-carousel-title mt-3">
-                    <a className="btn btn-outline-secondary btn-lg" href='#'>View More</a>
+                    <Link className="btn btn-outline-secondary btn-lg" to='/search'>View More</Link>
                 </div>
             </div>
         
     );
 }
+
+// 用 Link：只是跳转，不需要“选中态”样式（例如详情页里的“返回列表”）。
+// 用 NavLink：需要根据当前路由高亮/标记（导航栏、侧边栏、分页按钮、Tab）。
