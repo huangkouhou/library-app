@@ -29,7 +29,9 @@ export const SearchBooksPage = () => {
             if (searchUrl === ''){
                 url = `${baseUrl}?page=${currentPage - 1}&size=${booksPerPage}`;
             } else {
-                url = baseUrl + searchUrl;
+                // 搜索列表，把占位符<pageNumber>替换成真正的页码
+                let searchWithPage = searchUrl.replace('<pageNumber>', `${currentPage - 1}`)//后面真正发请求前，会把它替换成当前页（currentPage - 1，因为后端分页从 0 开始）。
+                url = baseUrl + searchWithPage;
             }
 
             const response = await fetch(url);
@@ -88,15 +90,20 @@ export const SearchBooksPage = () => {
 
     //find by title function(in the placeholder)
     const searchHandleChange = () => {
+        setCurrentPage(1);
         if (search === ''){
             setSearchUrl('');
         } else {
-            setSearchUrl(`/search/findByTitleContaining?title=${search}&page=0&size=${booksPerPage}`)
+            //if we set the page=0 here, if there's more than one page for a search or a category, it will just show the same thing on each Pagination page
+            //change the page=0 to page=<pageNumber>
+            setSearchUrl(`/search/findByTitleContaining?title=${search}&page=<pageNumber>&size=${booksPerPage}`)
         }
+        setCategorySelection('Book category')
     }
 
     //find by category function
     const categoryField = (value: string) => {
+        setCurrentPage(1);
         if (
             value.toLocaleLowerCase() === 'fe' ||
             value.toLocaleLowerCase() === 'be' ||
@@ -104,10 +111,10 @@ export const SearchBooksPage = () => {
             value.toLocaleLowerCase() === 'devops'
         ){
             setCategorySelection(value);
-            setSearchUrl(`/search/findByCategory?category=${value}&page=0&size=${booksPerPage}`);
+            setSearchUrl(`/search/findByCategory?category=${value}&page=<pageNumber>&size=${booksPerPage}`);
         } else {
             setCategorySelection('ALL');
-            setSearchUrl(`?page=0&size=${booksPerPage}`)
+            setSearchUrl(`?page=<pageNumber>&size=${booksPerPage}`)//change the page=0 to page=<pageNumber>
         }
     }
 
@@ -204,3 +211,14 @@ export const SearchBooksPage = () => {
         </div>
     );
 }
+{/*
+<pageNumber>是自定义的占位符。后面真正发请求前，会把它替换成当前页（currentPage - 1，因为后端分页从 0 开始）。
+// 构建最终 URL 时：
+const searchWithPage = searchUrl.replace('<pageNumber>', String(currentPage - 1));
+const url = baseUrl + searchWithPage;
+
+为啥改成 page=0 会“出错”？
+不是真正的报错，而是分页失效：
+如果你把 searchUrl 里写死成 page=0，那不管你点第几页，最终拼出来的 URL 里永远是 page=0，
+所以每一页都拿到第一页的数据，看起来“每页都一样”。
+*/}
