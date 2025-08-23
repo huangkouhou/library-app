@@ -5,13 +5,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
-
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.luv2code.spring_boot_library.entity.Book;
 
 public interface BookRepository extends JpaRepository<Book,Long> {
-
+    //find by title
     Page<Book> findByTitleContaining(@Param("title") String title, Pageable pageable);
+
+    // find by category
+    Page<Book> findByCategory(@RequestParam("category") String category, Pageable pageable);
 }
 
 //extends JpaRepository<Book, Long>：继承后自动拥有常见 CRUD（增删改查）、分页、排序等方法。

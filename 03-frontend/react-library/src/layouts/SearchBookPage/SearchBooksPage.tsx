@@ -16,6 +16,7 @@ export const SearchBooksPage = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [search, setSearch] = useState('');
     const [searchUrl, setSearchUrl] = useState('');
+    const [categorySelection, setCategorySelection] = useState('Book category');
 
 
     // ② 在 useEffect 里，根据“依赖数组”去更新状态
@@ -85,6 +86,7 @@ export const SearchBooksPage = () => {
         )
     }
 
+    //find by title function(in the placeholder)
     const searchHandleChange = () => {
         if (search === ''){
             setSearchUrl('');
@@ -92,6 +94,23 @@ export const SearchBooksPage = () => {
             setSearchUrl(`/search/findByTitleContaining?title=${search}&page=0&size=${booksPerPage}`)
         }
     }
+
+    //find by category function
+    const categoryField = (value: string) => {
+        if (
+            value.toLocaleLowerCase() === 'fe' ||
+            value.toLocaleLowerCase() === 'be' ||
+            value.toLocaleLowerCase() === 'data' ||
+            value.toLocaleLowerCase() === 'devops'
+        ){
+            setCategorySelection(value);
+            setSearchUrl(`/search/findByCategory?category=${value}&page=0&size=${booksPerPage}`);
+        } else {
+            setCategorySelection('ALL');
+            setSearchUrl(`?page=0&size=${booksPerPage}`)
+        }
+    }
+
 
     //indexOfLastBook 是当前页在数组中的结束下标（slice 的右开界）indexOfFirstBook 是当前页在数组中的开始下标（slice 的左闭界）
     const indexOfLastBook: number = currentPage * booksPerPage;
@@ -122,30 +141,30 @@ export const SearchBooksPage = () => {
                             <button className='btn btn-secondary dropdown-toggle' type='button'
                                 id='dropdownMenuButton1' data-bs-toggle='dropdown'
                                 aria-expanded='false'>
-                                Category    
+                                {categorySelection}    
                             </button>
                             <ul className='dropdown-menu' aria-labelledby='dropdownMenuButton1'>
-                                <li>
+                                <li onClick={() => categoryField('ALL')}>
                                     <a className='dropdown-item' href='#'>
                                         ALL
                                     </a>
                                 </li>
-                                <li>
+                                <li onClick={() => categoryField('FE')}>
                                     <a className='dropdown-item' href='#'>
                                         Front End
                                     </a>
                                 </li>
-                                <li>
+                                <li onClick={() => categoryField('BE')}>
                                     <a className='dropdown-item' href='#'>
                                         Back End
                                     </a>
                                 </li>
-                                <li>
+                                <li onClick={() => categoryField('Data')}>
                                     <a className='dropdown-item' href='#'>
                                         Data
                                     </a>
                                 </li>
-                                <li>
+                                <li onClick={() => categoryField('DevOps')}>
                                     <a className='dropdown-item' href='#'>
                                         DevOps
                                     </a>
