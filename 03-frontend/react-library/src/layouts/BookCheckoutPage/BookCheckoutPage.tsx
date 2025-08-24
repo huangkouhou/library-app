@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import BookModel from "../../models/BookModel";
 import { SpinnerLoading } from "../Utils/SpinnerLoading";
+import { StarsReview } from "../Utils/StarsReview";
+import { CheckoutAndReviewBox } from "./CheckoutAndReviewBox";
 
 export const BookCheckoutPage = () => {
   // ① 在组件顶层定义状态
@@ -58,7 +60,7 @@ export const BookCheckoutPage = () => {
 
   return (
     <div>
-      <div className="container d-none d-lg-block">
+      <div className="container d-none d-lg-block">{/*小于 lg(992px) 隐藏（d-none），lg 及以上显示为块级（d-lg-block）。用途：只在「桌面端」显示的部分。*/}
         <div className="row mt-5">
           <div className="col-sm-2 col-md-2">
             {book?.img ? (
@@ -77,12 +79,14 @@ export const BookCheckoutPage = () => {
               <h2>{book?.title}</h2>
               <h5 className="text-primary">{book?.author}</h5>
               <p className="lead">{book?.description}</p>
+              <StarsReview rating={4} size={32} />
             </div>
           </div>
+          <CheckoutAndReviewBox book={book} mobile={false}/>
         </div>
         <hr />
       </div>
-      <div className="container d-lg-none mt-5">
+      <div className="container d-lg-none mt-5">{/*lg 及以上隐藏，小于 lg 显示（保持默认 display）。用途：只在「手机/平板」显示的部分。*/}
         <div className="d-flex justify-content-center align-items-center">
           {book?.img ? (
             <img src={book?.img} width="226" height="349" alt="Book" />
@@ -100,8 +104,10 @@ export const BookCheckoutPage = () => {
             <h2>{book?.title}</h2>
             <h5 className="text-primary">{book?.author}</h5>
             <p className="lead">{book?.description}</p>
+            <StarsReview rating={4} size={32} />
           </div>
         </div>
+        <CheckoutAndReviewBox book={book} mobile={true} />
         <hr />
       </div>
     </div>
