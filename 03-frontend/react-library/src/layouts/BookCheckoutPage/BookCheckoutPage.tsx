@@ -4,6 +4,7 @@ import { SpinnerLoading } from "../Utils/SpinnerLoading";
 import { StarsReview } from "../Utils/StarsReview";
 import { CheckoutAndReviewBox } from "./CheckoutAndReviewBox";
 import ReviewModel from "../../models/ReviewModel";
+import { LatestReviews } from "./LatestReviews";
 
 export const BookCheckoutPage = () => {
   // ① 在组件顶层定义状态
@@ -135,11 +136,12 @@ export const BookCheckoutPage = () => {
               <h2>{book?.title}</h2>
               <h5 className="text-primary">{book?.author}</h5>
               <p className="lead">{book?.description}</p>
-              <StarsReview rating={4} size={32} />
+              <StarsReview rating={totalStars} size={32} />
             </div>
           </div>
           <CheckoutAndReviewBox book={book} mobile={false}/>
         </div>
+        <LatestReviews reviews={reviews} bookId={book?.id} mobile={false} />
         <hr />
       </div>
       <div className="container d-lg-none mt-5">{/*lg 及以上隐藏，小于 lg 显示（保持默认 display）。用途：只在「手机/平板」显示的部分。*/}
@@ -160,11 +162,12 @@ export const BookCheckoutPage = () => {
             <h2>{book?.title}</h2>
             <h5 className="text-primary">{book?.author}</h5>
             <p className="lead">{book?.description}</p>
-            <StarsReview rating={4} size={32} />
+            <StarsReview rating={totalStars} size={32} />
           </div>
         </div>
         <CheckoutAndReviewBox book={book} mobile={true} />
         <hr />
+        <LatestReviews reviews={reviews} bookId={book?.id} mobile={true} />
       </div>
     </div>
   );
