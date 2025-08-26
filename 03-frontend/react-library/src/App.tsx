@@ -12,7 +12,7 @@ export const App = () => {
       <Navbar />
       <div className="flex-grow-1"> {/*让中间这块主内容占据剩余空间，等价于把 Footer 推到底部*/}
         <Switch>
-          <Route path="/" exact> {/*Switch 常配合 exact，避免 / 抢先匹配更长路径。*/}
+          <Route path="/" exact>  {/*Switch 常配合 exact，避免 / 抢先匹配更长路径。*/}
             <Redirect to="/home" />
           </Route>
           <Route path="/home">
