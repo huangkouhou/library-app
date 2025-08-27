@@ -2,8 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { Link } from "react-router-dom";
 
 export const Heros = () => {
-  
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
 
   return (
     <div>
@@ -22,17 +21,16 @@ export const Heros = () => {
                 be able to provide the top content for you!
               </p>
               {isAuthenticated ? (
-                <Link
-                  type="button"
-                  className="btn main-color btn-lg text-white"
-                  to="search"
-                >
+                <Link className="btn main-color btn-lg text-white" to="/search">
                   Explore top books
                 </Link>
               ) : (
-                <Link className="btn main-color btn-lg text-white" to="/login">
+                <button
+                  className="btn main-color btn-lg text-white"
+                  onClick={() => loginWithRedirect()}
+                >
                   Sign up
-                </Link>
+                </button>
               )}
             </div>
           </div>
@@ -73,17 +71,16 @@ export const Heros = () => {
                 be able to provide the top content for you!
               </p>
               {isAuthenticated ? (
-                <Link
-                  type="button"
-                  className="btn main-color btn-lg text-white"
-                  to="search"
-                >
+                <Link className="btn main-color btn-lg text-white" to="/search">
                   Explore top books
                 </Link>
               ) : (
-                <Link className="btn main-color btn-lg text-white" to="/login">
-                  Sign up
-                </Link>
+                <button
+                  className="btn main-color btn-lg text-white"
+                  onClick={() => loginWithRedirect()}
+                >
+                  Sign in
+                </button>
               )}
             </div>
           </div>
