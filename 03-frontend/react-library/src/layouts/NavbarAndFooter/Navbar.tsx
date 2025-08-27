@@ -9,17 +9,20 @@ export const Navbar = () => {
   const { isAuthenticated, loginWithRedirect, logout, getIdTokenClaims } =
     useAuth0();
 
-  useEffect(() => {
-    const fetchRoles = async () => {
-      const claims = await getIdTokenClaims();
-      const fetchedRoles =
-        claims?.["https://luv2code-react-library.com/roles"] || [];
-      setRoles(fetchedRoles);
-      setLoading(false); // Set loading to false once roles are loaded
-    };
-
-    fetchRoles();
-  }, [isAuthenticated, getIdTokenClaims]);
+useEffect(() => {
+  const fetchRoles = async () => {
+    if (!isAuthenticated) {          // 未登录直接清空并结束 loading
+      setRoles(null);
+      setLoading(false);
+      return;
+    }
+    const claims = await getIdTokenClaims();
+    const fetchedRoles = claims?.['https://luv2code-react-library.com/roles'] ?? [];
+    setRoles(fetchedRoles);
+    setLoading(false);
+  };
+  fetchRoles();
+}, [isAuthenticated, getIdTokenClaims]);
 
   if (loading) {
     return <SpinnerLoading />;
@@ -30,10 +33,9 @@ export const Navbar = () => {
     logout({ logoutParams: { returnTo: window.location.origin } });
   };
 
-  const handleLogin = () => {
-    loginWithRedirect(); //调用 Auth0 的登录：跳到 Auth0 登录页
-    window.location.assign("/"); //立刻把浏览器重定向到站点根路径（整页刷新）
-  };
+  const handleLogin = () => 
+    loginWithRedirect({ appState: { returnTo: "/home" } });
+
 
   console.log("isAuthenticated: ", isAuthenticated);
   return (
