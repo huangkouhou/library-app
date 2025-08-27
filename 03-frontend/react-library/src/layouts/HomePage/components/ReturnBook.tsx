@@ -1,5 +1,6 @@
 import React from 'react';
 import BookModel from '../../../models/BookModel';
+import { Link } from 'react-router-dom';
 
 //React.FC 是 TypeScript 里给“函数组件”的类型别名（全名 React.FunctionComponent）
 //这个对象必须有一个名为 book 的属性，该属性的类型是 BookModel（自定义的类/接口）。
@@ -25,7 +26,7 @@ export const ReturnBook: React.FC<{book: BookModel}> = (props) => {
 
                 <h6 className="mt-2">{props.book.title}</h6>
                 <p>{props.book.author}</p>
-                <a className="btn main-color text-white" href='#'>Reserve</a>
+                <Link className="btn main-color text-white" to={`checkout/${props.book.id}`}>Reserve</Link>
             </div>
         </div>
     );
