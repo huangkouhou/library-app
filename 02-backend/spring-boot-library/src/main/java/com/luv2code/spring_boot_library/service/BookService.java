@@ -52,4 +52,15 @@ public class BookService {
         return book.get();
     }
 
+    //Checkout possibility function
+    public Boolean checkoutBookByUser(String userEmail, Long bookId){
+        Checkout validateCheckout = checkoutRepository.findByUserEmailAndBookId(userEmail, bookId);
+        if (validateCheckout != null){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 }
