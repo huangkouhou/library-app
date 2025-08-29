@@ -31,3 +31,13 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+application.properties
+application-*.properties
+auth0Config.ts
+.env
+.env.*
+!application-example.properties
+!auth0Config.example.ts
+!.env.example
