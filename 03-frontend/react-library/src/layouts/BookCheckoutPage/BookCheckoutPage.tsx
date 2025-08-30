@@ -64,7 +64,7 @@ export const BookCheckoutPage = () => {
       setIsLoading(false);
       setHttpError(error.message);
     });
-  }, []); //[...] 依赖数组，决定何时运行：只在首次挂载运行一次；[a, b]：当 a 或 b 变化时运行。省略 []：每次渲染后都运行（少用）。
+  }, [isCheckedOut]); //[...] 依赖数组，决定何时运行：只在首次挂载运行一次；[a, b]：当 a 或 b 变化时运行。省略 []：每次渲染后都运行（少用）。
 
   //Review useEffect
   useEffect(() => {
@@ -145,7 +145,7 @@ export const BookCheckoutPage = () => {
       setIsLoadingCurrentLoansCount(false);
       setHttpError(error.message);
     });
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isCheckedOut]);
 
   //Is Book CheckedOut useEffect
   useEffect(() => {
@@ -194,6 +194,24 @@ export const BookCheckoutPage = () => {
     );
   }
 
+  //checkoutBook function
+  async function checkoutBook(){
+    const accessToken = await getAccessTokenSilently();
+    const url = `http://localhost:8080/api/books/secure/checkout?bookId=${book?.id}`;
+    const requestOptions = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    };
+    const checkoutResponse = await fetch(url, requestOptions);
+    if (!checkoutResponse.ok) {
+      throw new Error('Something went wrong!');
+    }
+    setIsCheckedOut(true);
+  };
+
   return (
     <div>
       <div className="container d-none d-lg-block">
@@ -225,6 +243,7 @@ export const BookCheckoutPage = () => {
             currentLoansCount={currentLoansCount}
             isAuthenticated={isAuthenticated}
             isCheckedOut={isCheckedOut}
+            checkoutBook={checkoutBook}
           />
         </div>
         <LatestReviews reviews={reviews} bookId={book?.id} mobile={false} />
@@ -258,6 +277,7 @@ export const BookCheckoutPage = () => {
             currentLoansCount={currentLoansCount}
             isAuthenticated={isAuthenticated}
             isCheckedOut={isCheckedOut}
+            checkoutBook={checkoutBook}
           />
         <hr />
         <LatestReviews reviews={reviews} bookId={book?.id} mobile={true} />

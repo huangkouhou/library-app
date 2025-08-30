@@ -6,21 +6,38 @@ export const CheckoutAndReviewBox: React.FC<{
   mobile: boolean,
   currentLoansCount: number,
   isAuthenticated: any, //any 是 TypeScript 里的“放弃类型检查”类型
-  isCheckedOut: boolean
+  isCheckedOut: boolean,
+  checkoutBook: any
 }> = (props) => {
 
   //Dynamic Button Rendering
   function buttonRender() {
-    if (props.isAuthenticated) {
-      if (!props.isCheckedOut && props.currentLoansCount < 5){
-        return (<button className="btn btn-success btn-lg">Checkout</button>)
-      }else if (props.isCheckedOut){
-        return (<p><b>Book checked out. Enjoy!</b></p>)
-      }else if (!props.isAuthenticated){
-        return (<p className="text-danger">Too many books checked out.</p>)
-      }
+
+    // 未登录：直接去登录
+    if (!props.isAuthenticated){
+      return (<Link to={'/login'} className="btn btn-success btn-lg">Sign in</Link>)
     }
-    return (<Link to={'/login'} className="btn btn-success btn-lg">Sign in</Link>)
+    // 已借出：提示
+  if (props.isCheckedOut) {
+    return <p><b>Book checked out. Enjoy!</b></p>;
+  }
+
+  // 无可借副本或已达上限：提示
+  const noCopies = !(props.book?.copiesAvailable && props.book.copiesAvailable > 0);
+  if (props.currentLoansCount >= 5 || noCopies) {
+    return <p className="text-danger">Too many books checked out.</p>;
+  }
+
+  // 可以借：显示按钮（确保真的调用 checkoutBook）
+  return (
+    <button
+      type="button"
+      onClick={props.checkoutBook}
+      className="btn btn-success btn-lg"
+    >
+      Checkout
+    </button>
+  );
   }
 
 
