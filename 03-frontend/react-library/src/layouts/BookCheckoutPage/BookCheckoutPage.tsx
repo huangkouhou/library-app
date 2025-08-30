@@ -8,9 +8,8 @@ import { LatestReviews } from "./LatestReviews";
 import { useAuth0 } from "@auth0/auth0-react";
 
 export const BookCheckoutPage = () => {
-
   //add Auth0 authentication
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0();//从 useAuth0() 返回的对象里，只取出两个属性
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0(); //从 useAuth0() 返回的对象里，只取出两个属性
 
   // ① 在组件顶层定义状态
   const [book, setBook] = useState<BookModel>();
@@ -24,7 +23,8 @@ export const BookCheckoutPage = () => {
 
   //Loans Count State
   const [currentLoansCount, setCurrentLoansCount] = useState(0);
-  const [isLoadingCurrentLoansCount, setIsLoadingCurrentLoansCount] = useState(true);
+  const [isLoadingCurrentLoansCount, setIsLoadingCurrentLoansCount] =
+    useState(true);
 
   //Is Book Check Out?
   const [isCheckedOut, setIsCheckedOut] = useState(false);
@@ -66,7 +66,6 @@ export const BookCheckoutPage = () => {
     });
   }, []); //[...] 依赖数组，决定何时运行：只在首次挂载运行一次；[a, b]：当 a 或 b 变化时运行。省略 []：每次渲染后都运行（少用）。
 
-
   //Review useEffect
   useEffect(() => {
     const fetchBookReviews = async () => {
@@ -74,8 +73,8 @@ export const BookCheckoutPage = () => {
 
       const responseReviews = await fetch(reviewUrl);
 
-      if (!responseReviews.ok){
-          throw new Error('Something went wrong!');
+      if (!responseReviews.ok) {
+        throw new Error("Something went wrong!");
       }
 
       const responseJsonReviews = await responseReviews.json();
@@ -95,14 +94,16 @@ export const BookCheckoutPage = () => {
           book_id: responseData[key].bookId,
           reviewDescription: responseData[key].reviewDescription,
         });
-        weightedStarReviews = weightedStarReviews + responseData[key].rating;//把所有评论的评分相加review的“总分”
+        weightedStarReviews = weightedStarReviews + responseData[key].rating; //把所有评论的评分相加review的“总分”
       }
-      
+
       //把“所有评分的平均值”四舍五入到最接近的 0.5，并存进状态 totalStars
       //* 2 再 Math.round(...) 再 / 2：把平均分按 0.5 为步长取整。
       //.toFixed(1)：把数字格式化成 1 位小数的字符串（比如 "4.5"）。
-      if (loadedReviews){
-        const round = (Math.round((weightedStarReviews / loadedReviews.length) * 2) / 2).toFixed(1);
+      if (loadedReviews) {
+        const round = (
+          Math.round((weightedStarReviews / loadedReviews.length) * 2) / 2
+        ).toFixed(1);
         setTotalStars(Number(round));
       }
 
@@ -113,9 +114,8 @@ export const BookCheckoutPage = () => {
     fetchBookReviews().catch((error: any) => {
       setIsLoadingReview(false);
       setHttpError(error.message);
-    })
+    });
   }, []);
-
 
   //currentLoansCount useEffect(因为是自定义的api所以需要const requestOptions)
   useEffect(() => {
@@ -125,60 +125,64 @@ export const BookCheckoutPage = () => {
         const url = `http://localhost:8080/api/books/secure/currentloans/count`;
         //requestOptions 就是你传给 fetch(url, options) 的第二个参数，用来告诉浏览器这次请求要怎么发
         const requestOptions = {
-          method: 'GET',
+          method: "GET",
           headers: {
-            Authorization: `Bearer ${accessToken}`,// ← Bearer 后面有一个空格
-            'Content-Type': 'application/json'
-          }
+            Authorization: `Bearer ${accessToken}`, // ← Bearer 后面有一个空格
+            "Content-Type": "application/json",
+          },
         };
         const currentLoansCountResponse = await fetch(url, requestOptions);
         if (!currentLoansCountResponse.ok) {
-          throw new Error('Something went wrong!');
+          throw new Error("Something went wrong!");
         }
-        const currentLoansCountResponseJson = await currentLoansCountResponse.json();
+        const currentLoansCountResponseJson =
+          await currentLoansCountResponse.json();
         setCurrentLoansCount(currentLoansCountResponseJson);
       }
       setIsLoadingCurrentLoansCount(false);
-    } 
+    };
     fetchUserCurrentLoansCount().catch((error: any) => {
       setIsLoadingCurrentLoansCount(false);
       setHttpError(error.message);
-    })
+    });
   }, [isAuthenticated]);
-
 
   //Is Book CheckedOut useEffect
   useEffect(() => {
     const fetchUserCheckedOutBook = async () => {
-        if (isAuthenticated){
-          const accessToken = await getAccessTokenSilently();
-          const url = `http://localhost:8080/api/books/secure/ischeckedout/byuser?bookId=${bookId}`;
-          const requestOptions = {
-            method:'GET',
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              'Content-Type': 'application/json'
-            }
-          };
-          const bookCheckedOut = await fetch(url, requestOptions);
+      if (isAuthenticated) {
+        const accessToken = await getAccessTokenSilently();
+        const url = `http://localhost:8080/api/books/secure/ischeckedout/byuser?bookId=${bookId}`;
+        const requestOptions = {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        };
+        const bookCheckedOut = await fetch(url, requestOptions);
 
-          if (!bookCheckedOut.ok) {
-            throw new Error('Something went wrong!');
-          }
-
-          const bookCheckedOutResponseJson = await bookCheckedOut.json();
-          setIsCheckedOut(bookCheckedOutResponseJson);
+        if (!bookCheckedOut.ok) {
+          throw new Error("Something went wrong!");
         }
-        setIsLoadingBookCheckedOut(false);
-    }
+
+        const bookCheckedOutResponseJson = await bookCheckedOut.json();
+        setIsCheckedOut(bookCheckedOutResponseJson);
+      }
+      setIsLoadingBookCheckedOut(false);
+    };
     fetchUserCheckedOutBook().catch((error: any) => {
       setIsLoadingBookCheckedOut(false);
       setHttpError(error.message);
-    })
+    });
   }, [isAuthenticated]);
 
-
-  if (isLoading || isLoadingReview || isLoadingCurrentLoansCount || isLoadingBookCheckedOut) {
+  if (
+    isLoading ||
+    isLoadingReview ||
+    isLoadingCurrentLoansCount ||
+    isLoadingBookCheckedOut
+  ) {
     return <SpinnerLoading />;
   }
 
@@ -192,7 +196,8 @@ export const BookCheckoutPage = () => {
 
   return (
     <div>
-      <div className="container d-none d-lg-block">{/*小于 lg(992px) 隐藏（d-none），lg 及以上显示为块级（d-lg-block）。用途：只在「桌面端」显示的部分。*/}
+      <div className="container d-none d-lg-block">
+        {/*小于 lg(992px) 隐藏（d-none），lg 及以上显示为块级（d-lg-block）。用途：只在「桌面端」显示的部分。*/}
         <div className="row mt-5">
           <div className="col-sm-2 col-md-2">
             {book?.img ? (
@@ -214,12 +219,19 @@ export const BookCheckoutPage = () => {
               <StarsReview rating={totalStars} size={32} />
             </div>
           </div>
-          <CheckoutAndReviewBox book={book} mobile={false} currentLoansCount={currentLoansCount}/>
+          <CheckoutAndReviewBox
+            book={book}
+            mobile={false}
+            currentLoansCount={currentLoansCount}
+            isAuthenticated={isAuthenticated}
+            isCheckedOut={isCheckedOut}
+          />
         </div>
         <LatestReviews reviews={reviews} bookId={book?.id} mobile={false} />
         <hr />
       </div>
-      <div className="container d-lg-none mt-5">{/*lg 及以上隐藏，小于 lg 显示（保持默认 display）。用途：只在「手机/平板」显示的部分。*/}
+      <div className="container d-lg-none mt-5">
+        {/*lg 及以上隐藏，小于 lg 显示（保持默认 display）。用途：只在「手机/平板」显示的部分。*/}
         <div className="d-flex justify-content-center align-items-center">
           {book?.img ? (
             <img src={book?.img} width="226" height="349" alt="Book" />
@@ -240,7 +252,13 @@ export const BookCheckoutPage = () => {
             <StarsReview rating={totalStars} size={32} />
           </div>
         </div>
-        <CheckoutAndReviewBox book={book} mobile={true} currentLoansCount={currentLoansCount}/>
+          <CheckoutAndReviewBox
+            book={book}
+            mobile={false}
+            currentLoansCount={currentLoansCount}
+            isAuthenticated={isAuthenticated}
+            isCheckedOut={isCheckedOut}
+          />
         <hr />
         <LatestReviews reviews={reviews} bookId={book?.id} mobile={true} />
       </div>
@@ -248,10 +266,8 @@ export const BookCheckoutPage = () => {
   );
 };
 
-
 // 数据库 ←(JPA/SQL)— Service/Repository ←(调用)— Controller
 //    ↘——————————————(序列化为 JSON)——————————————↗
 //                  HTTP 响应 (200, body)
 //                                 ↘
 //  fetch(...) → Response → .json() → currentLoansCountResponseJson → setState
-
