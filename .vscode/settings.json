@@ -3,6 +3,7 @@
         "appuser",
         "Configurer",
         "projectlombok",
+        "requestmodels",
         "springframework"
     ]
 }
