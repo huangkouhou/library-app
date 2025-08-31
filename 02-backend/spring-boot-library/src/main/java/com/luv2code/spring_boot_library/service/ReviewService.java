@@ -30,7 +30,6 @@ public class ReviewService {
     }
 
     //POST review function 在 Java 中，如果一个方法 (method) 不返回任何结果，那么 void 关键字是必须添加的
-    @Autowired
     public void postReview(String userEmail, ReviewRequest reviewRequest) throws Exception {
         Review validateReview = reviewRepository.findByUserEmailAndBookId(userEmail, reviewRequest.getBookId());
         if (validateReview != null) {
