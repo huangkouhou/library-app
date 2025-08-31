@@ -3,11 +3,9 @@ package com.luv2code.spring_boot_library.service;
 import java.time.LocalDate;
 import java.sql.Date;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.luv2code.spring_boot_library.dao.BookRepository;
 import com.luv2code.spring_boot_library.dao.ReviewRepository;
 import com.luv2code.spring_boot_library.entity.Review;
 import com.luv2code.spring_boot_library.requestmodels.ReviewRequest;
@@ -16,16 +14,12 @@ import com.luv2code.spring_boot_library.requestmodels.ReviewRequest;
 @Transactional
 public class ReviewService {
 
-    private BookRepository bookRepository;
-
     private ReviewRepository reviewRepository;
 
-    //ReviewService 这个类要依赖两个仓库（BookRepository、ReviewRepository），
-    //由 Spring 在创建 ReviewService 的时候自动把这两个依赖传进来，然后赋值给类里的同名字段，供后续方法使用。
-    public ReviewService(BookRepository bookRepository,
-                        ReviewRepository reviewRepository) {
+    //ReviewService 这个类要依赖仓库ReviewRepository
+    //由 Spring 在创建 ReviewService 的时候自动把这个依赖传进来，然后赋值给类里的同名字段，供后续方法使用。
+    public ReviewService(ReviewRepository reviewRepository) {
     
-        this.bookRepository = bookRepository;
         this.reviewRepository = reviewRepository;
     }
 
@@ -47,6 +41,16 @@ public class ReviewService {
         }
         review.setDate(Date.valueOf(LocalDate.now()));
         reviewRepository.save(review);
+    }
+
+    //New Review endpoint (check if the user has already left a review for this book)
+    public Boolean userReviewListed(String userEmail, Long bookId){
+        Review validateReview = reviewRepository.findByUserEmailAndBookId(userEmail, bookId);
+        if (validateReview != null){
+            return true;
+        } else {
+            return false;
+        }
     }
 
 

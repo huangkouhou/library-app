@@ -21,7 +21,7 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                         "/api/books/secure/**",
-                        "/api/reviews/secure/**",
+                        "/api/reviews/secure/**",//secure our review
                         "/api/messages/secure/**",
                         "/api/admin/secure/**"
                 ).authenticated()
