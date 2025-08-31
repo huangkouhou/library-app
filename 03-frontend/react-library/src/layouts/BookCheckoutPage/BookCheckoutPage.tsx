@@ -20,6 +20,9 @@ export const BookCheckoutPage = () => {
   const [reviews, setReviews] = useState<ReviewModel[]>([]);
   const [totalStars, setTotalStars] = useState(0);
   const [isLoadingReview, setIsLoadingReview] = useState(true);
+  //already left a review?
+  const [isReviewLeft, setIsReviewLeft] = useState(false);
+  const [isLoadingUserReview, setIsLoadingUserReview] = useState(true);
 
   //Loans Count State
   const [currentLoansCount, setCurrentLoansCount] = useState(0);
@@ -64,7 +67,7 @@ export const BookCheckoutPage = () => {
       setIsLoading(false);
       setHttpError(error.message);
     });
-  }, [isCheckedOut]); //[...] 依赖数组，决定何时运行：只在首次挂载运行一次；[a, b]：当 a 或 b 变化时运行。省略 []：每次渲染后都运行（少用）。
+  }, [isCheckedOut, getAccessTokenSilently, bookId]); //[...] 依赖数组，决定何时运行：只在首次挂载运行一次；[a, b]：当 a 或 b 变化时运行。省略 []：每次渲染后都运行（少用）。
 
   //Review useEffect
   useEffect(() => {
@@ -115,7 +118,37 @@ export const BookCheckoutPage = () => {
       setIsLoadingReview(false);
       setHttpError(error.message);
     });
-  }, []);
+  }, [bookId, isReviewLeft]);
+
+  //already left a review?
+  useEffect(() => {
+    const fetchUserReviewBook = async () => {
+        if (isAuthenticated){
+          const accessToken = await getAccessTokenSilently();
+          const url = `http://localhost:8080/api/reviews/secure/user/book?bookId=${bookId}`;
+          const requestOptions = {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              'Content-Type':'application/json'
+            }
+          };
+          const userReview = await fetch(url, requestOptions);
+          if (!userReview.ok){
+            throw new Error('Something went wrong');
+          }
+          const userReviewResponseJson = await userReview.json();
+          setIsReviewLeft(userReviewResponseJson);
+        }
+        setIsLoadingUserReview(false);
+    }
+    fetchUserReviewBook().catch((error: any) => {
+        setIsLoadingUserReview(false);
+        setHttpError(error.message);
+    })
+  }, [isAuthenticated, getAccessTokenSilently, bookId]);
+
+
 
   //currentLoansCount useEffect(因为是自定义的api所以需要const requestOptions)
   useEffect(() => {
@@ -145,7 +178,7 @@ export const BookCheckoutPage = () => {
       setIsLoadingCurrentLoansCount(false);
       setHttpError(error.message);
     });
-  }, [isAuthenticated, isCheckedOut]);
+  }, [isAuthenticated,getAccessTokenSilently, isCheckedOut]);
 
   //Is Book CheckedOut useEffect
   useEffect(() => {
@@ -175,13 +208,14 @@ export const BookCheckoutPage = () => {
       setIsLoadingBookCheckedOut(false);
       setHttpError(error.message);
     });
-  }, [isAuthenticated]);
+  }, [isAuthenticated, getAccessTokenSilently, bookId]);
 
   if (
     isLoading ||
     isLoadingReview ||
     isLoadingCurrentLoansCount ||
-    isLoadingBookCheckedOut
+    isLoadingBookCheckedOut ||
+    isLoadingUserReview
   ) {
     return <SpinnerLoading />;
   }
