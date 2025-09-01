@@ -4,6 +4,7 @@
         "Configurer",
         "projectlombok",
         "requestmodels",
+        "reviewlist",
         "springframework"
     ]
 }
