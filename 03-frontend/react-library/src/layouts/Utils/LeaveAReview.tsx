@@ -13,14 +13,18 @@ export const LeaveAReview: React.FC <{ submitReview: any }> = (props) => {
 
   return (
     <div className="dropdown" style={{ cursor: 'pointer' }}>
-      <h5
-        className="dropdown-toggle"
-        id="dropdownMenuButton1"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-        Leave a review?
-      </h5>
+    {/* 用按钮做触发器 */}
+        <button
+            id="dropdownMenuButton1"
+            type="button"
+            className="btn btn-link dropdown-toggle p-0 h5"  // 用样式让它看起来像标题
+            data-bs-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded={displayInput}        // 布尔值
+            aria-controls="submitReviewRating"  // 控制的菜单 id
+        >
+            Leave a review?
+        </button>
 
       <ul id="submitReviewRating" className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
         <li><button type="button" onClick={() => starValue(0)}   className="dropdown-item">0 star</button></li>

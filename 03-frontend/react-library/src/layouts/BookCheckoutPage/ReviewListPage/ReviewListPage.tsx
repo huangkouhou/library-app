@@ -21,6 +21,8 @@ export const ReviewListPage = () => {
   //Review useEffect
   useEffect(() => {
     const fetchBookReviews = async () => {
+      setIsLoading(true);
+      
       const reviewUrl =
         `http://localhost:8080/api/reviews/search/findByBookId?bookId=${bookId}` +
         `&page=${currentPage - 1}&size=${reviewsPerPage}`;
@@ -61,7 +63,7 @@ export const ReviewListPage = () => {
       setIsLoading(false);
       setHttpError(error.message);
     });
-  }, [currentPage]);
+  }, [currentPage, bookId, reviewsPerPage]);
 
   if (isLoading) {
     return <SpinnerLoading />;
