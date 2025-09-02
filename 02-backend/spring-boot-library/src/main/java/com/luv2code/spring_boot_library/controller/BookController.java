@@ -1,6 +1,5 @@
 package com.luv2code.spring_boot_library.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,7 +20,7 @@ public class BookController {
 
     private BookService bookService;
 
-    @Autowired
+    
     public BookController(BookService bookService){
         this.bookService = bookService;
     }
