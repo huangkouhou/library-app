@@ -2,6 +2,8 @@ package com.luv2code.spring_boot_library.service;
 
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import com.luv2code.spring_boot_library.dao.BookRepository;
 import com.luv2code.spring_boot_library.dao.CheckoutRepository;
 import com.luv2code.spring_boot_library.entity.Book;
 import com.luv2code.spring_boot_library.entity.Checkout;
+import com.luv2code.spring_boot_library.responsemodels.ShelfCurrentLoansResponse;
 
 
 @Service
@@ -62,10 +65,26 @@ public class BookService {
         }
     }
 
-    //get how many elements are in the list function
+    //get how many elements are in the list function(only numbers)
     public int currentLoansCount(String userEmail) {
         return checkoutRepository.findBooksByUserEmail(userEmail).size();
     }
 
+    //CurrentLoans function(currentloans content)
+    public List<ShelfCurrentLoansResponse> currentloans(String userEmail) throws Exception {
+
+        List<ShelfCurrentLoansResponse> ShelfCurrentLoansResponses = new ArrayList<>();
+
+        List<Checkout> checkoutlist = checkoutRepository.findBooksByUserEmail(userEmail);
+        List<Long> bookIdList = new ArrayList<>();
+
+        for (Checkout i: checkoutlist){
+            bookIdList.add(i.getBookId());
+        }
+
+        List<Book> books = bookRepository.findBooksByBookIds(bookIdList);//find this function in BookRepository
+
+
+    }
 
 }

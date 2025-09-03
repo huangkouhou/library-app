@@ -1,9 +1,12 @@
 {
     "cSpell.words": [
         "appuser",
+        "checkoutlist",
         "Configurer",
+        "currentloans",
         "projectlombok",
         "requestmodels",
+        "responsemodels",
         "reviewlist",
         "springframework"
     ]
