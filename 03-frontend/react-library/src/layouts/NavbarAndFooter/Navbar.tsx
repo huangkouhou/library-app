@@ -105,7 +105,7 @@ export const Navbar = () => {
 
             {isAuthenticated && (
               <li className="nav-item">
-                <NavLink className="nav-link" to="/shelf">
+                <NavLink className="nav-link" to={"/shelf"}>
                   Shelf
                 </NavLink>
               </li>
