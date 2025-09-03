@@ -1,5 +1,7 @@
 package com.luv2code.spring_boot_library.controller;
 
+import java.util.List;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -10,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import com.luv2code.spring_boot_library.entity.Book;
+import com.luv2code.spring_boot_library.responsemodels.ShelfCurrentLoansResponse;
 import com.luv2code.spring_boot_library.service.BookService;
 
 @CrossOrigin("http://localhost:3000")
@@ -25,9 +29,18 @@ public class BookController {
         this.bookService = bookService;
     }
 
+    @GetMapping("/secure/currentloans")
+    public List<ShelfCurrentLoansResponse> currentLoans(@AuthenticationPrincipal Jwt jwt) 
+        throws Exception
+    {
+        String userEmail = jwt.getClaim("email");
+        return bookService.currentLoans(userEmail);
+    }
+
+
     @GetMapping("/secure/currentloans/count")
     public int currentLoansCount(@AuthenticationPrincipal Jwt jwt){
-        String userEmail = jwt.getClaim("testuser@email.com");
+        String userEmail = jwt.getClaim("email");
         return bookService.currentLoansCount(userEmail);
     }
     
@@ -36,7 +49,7 @@ public class BookController {
     @GetMapping("/secure/ischeckedout/byuser")
     public Boolean checkoutBookByUser(@AuthenticationPrincipal Jwt jwt,
                                       @RequestParam Long bookId){
-        String userEmail = jwt.getClaim("testuser@email.com");
+        String userEmail = jwt.getClaim("email");
         return bookService.checkoutBookByUser(userEmail, bookId);
     }
 
@@ -44,7 +57,7 @@ public class BookController {
     @ResponseBody
     public Book checkoutBook (@AuthenticationPrincipal Jwt jwt,
                               @RequestParam Long bookId) throws Exception {
-        String userEmail = jwt.getClaim("testuser@email.com");
+        String userEmail = jwt.getClaim("email");
         return bookService.checkoutBook(userEmail, bookId);
     }
 }

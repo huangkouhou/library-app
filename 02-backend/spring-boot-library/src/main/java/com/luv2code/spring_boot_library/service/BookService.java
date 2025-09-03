@@ -74,7 +74,7 @@ public class BookService {
     }
 
     //CurrentLoans function(currentloans content)
-    public List<ShelfCurrentLoansResponse> currentloans(String userEmail) throws Exception {
+    public List<ShelfCurrentLoansResponse> currentLoans(String userEmail) throws Exception {
 
         List<ShelfCurrentLoansResponse> shelfCurrentLoansResponses = new ArrayList<>();
 
