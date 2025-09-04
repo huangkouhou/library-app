@@ -1,9 +1,11 @@
 {
     "cSpell.words": [
         "appuser",
+        "byuser",
         "checkoutlist",
         "Configurer",
         "currentloans",
+        "ischeckedout",
         "projectlombok",
         "requestmodels",
         "responsemodels",
