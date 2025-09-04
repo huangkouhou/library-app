@@ -6,6 +6,7 @@
         "Configurer",
         "currentloans",
         "ischeckedout",
+        "mobilemodal",
         "projectlombok",
         "requestmodels",
         "responsemodels",
