@@ -69,4 +69,12 @@ public class BookController {
         bookService.returnBook(userEmail, bookId);
     }
     
+    @PutMapping("/secure/renew/loan")
+    public void renewLoan(@AuthenticationPrincipal Jwt jwt,
+                          @RequestParam Long bookId) throws Exception {
+        String userEmail = jwt.getClaim("email");
+        bookService.returnBook(userEmail, bookId);        
+    }
+
+    
 }

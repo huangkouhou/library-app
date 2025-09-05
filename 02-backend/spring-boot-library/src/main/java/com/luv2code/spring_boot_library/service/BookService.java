@@ -133,6 +133,28 @@ public class BookService {
         }
 
 
+        //Renew Loans function
+        public void renewLoan(String userEmail, Long bookId) throws Exception {
+            // 1) 查找这位用户对这本书的借阅记录
+            Checkout validateCheckout = checkoutRepository.findByUserEmailAndBookId(userEmail, bookId);
+            // 2) 没有借阅记录就抛错
+            if (validateCheckout == null){
+                throw new Exception("Book does not exist or not checked out by user");
+            }
+            // 3) 用 yyyy-MM-dd 的格式化器把字符串日期解析成 Date
+            SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            Date d1 = sdFormat.parse(validateCheckout.getReturnDate());// 到期日
+            Date d2 = sdFormat.parse(LocalDate.now().toString());      // 今天
+
+            // 4) 如果到期日 >= 今天（未逾期），就把 returnDate 设为今天+7 天，并保存
+            if (d1.compareTo(d2) > 0 || d1.compareTo(d2) == 0) {
+                validateCheckout.setReturnDate(LocalDate.now().plusDays(7).toString());
+                checkoutRepository.save(validateCheckout);
+            }
+        }
+
+
 
 
         
