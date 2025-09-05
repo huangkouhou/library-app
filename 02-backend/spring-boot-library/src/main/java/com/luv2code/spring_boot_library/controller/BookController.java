@@ -73,7 +73,7 @@ public class BookController {
     public void renewLoan(@AuthenticationPrincipal Jwt jwt,
                           @RequestParam Long bookId) throws Exception {
         String userEmail = jwt.getClaim("email");
-        bookService.returnBook(userEmail, bookId);        
+        bookService.renewLoan(userEmail, bookId);        
     }
 
     
