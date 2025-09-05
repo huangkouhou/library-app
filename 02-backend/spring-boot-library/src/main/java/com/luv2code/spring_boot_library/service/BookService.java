@@ -11,12 +11,12 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.luv2code.spring_boot_library.dao.BookRepository;
 import com.luv2code.spring_boot_library.dao.CheckoutRepository;
 import com.luv2code.spring_boot_library.entity.Book;
 import com.luv2code.spring_boot_library.entity.Checkout;
 import com.luv2code.spring_boot_library.responsemodels.ShelfCurrentLoansResponse;
+
 
 
 @Service
@@ -112,7 +112,31 @@ public class BookService {
         
         return shelfCurrentLoansResponses;
 
-
     }
 
-}
+
+        //Return Book function
+        public void returnBook (String userEmail, Long bookId) throws Exception {
+
+            Optional<Book> book = bookRepository.findById(bookId);
+
+            Checkout validateCheckout = checkoutRepository.findByUserEmailAndBookId(userEmail, bookId);
+
+            if (!book.isPresent() || validateCheckout == null){
+                throw new Exception("Book does not exist or not checked out by user");
+            }
+            book.get().setCopiesAvailable(book.get().getCopiesAvailable() + 1);
+
+            bookRepository.save(book.get());
+            checkoutRepository.deleteById(validateCheckout.getId());
+
+        }
+
+
+
+
+        
+        
+    }
+
+
