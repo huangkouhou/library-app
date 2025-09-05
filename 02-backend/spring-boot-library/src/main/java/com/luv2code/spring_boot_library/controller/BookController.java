@@ -62,7 +62,7 @@ public class BookController {
     }
 
 
-    @GetMapping("/secure/return")
+    @PutMapping("/secure/return")
     public void returnBook(@AuthenticationPrincipal Jwt jwt,
                            @RequestParam Long bookId) throws Exception {
         String userEmail = jwt.getClaim("email");

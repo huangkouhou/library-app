@@ -10,10 +10,9 @@ export const Loans = () => {
   const [httpError, setHttpError] = useState(null);
 
   //Current Loans
-  const [shelfCurrentLoans, setShelfCurrentLoans] = useState<
-    ShelfCurrentLoans[]
-  >([]);
+  const [shelfCurrentLoans, setShelfCurrentLoans] = useState<ShelfCurrentLoans[]>([]);
   const [isLoadingUserLoans, setIsLoadingUserLoans] = useState(true);
+  const [checkout, setCheckout] = useState(false);
 
   useEffect(() => {
     const fetchUserCurrentLoans = async () => {
@@ -42,7 +41,7 @@ export const Loans = () => {
       setHttpError(error.message);
     });
     window.scrollTo(0, 0);
-  }, [isAuthenticated, getAccessTokenSilently]);
+  }, [isAuthenticated, getAccessTokenSilently, checkout]);
 
   if (isLoadingUserLoans) {
     return <SpinnerLoading />;
@@ -55,6 +54,28 @@ export const Loans = () => {
       </div>
     );
   }
+
+
+  //return book function
+  async function returnBook(bookId: number){
+    const url = `http://localhost:8080/api/books/secure/return?bookId=${bookId}`;
+    const accessToken = await getAccessTokenSilently();
+    const requestOptions = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    };
+      const returnResponse = await fetch(url, requestOptions);
+      if (!returnResponse.ok){
+        throw new Error('Something went wrong!');
+      }
+      setCheckout(!checkout);
+  }
+
+
+
 
   return (
     <div>
@@ -133,7 +154,11 @@ export const Loans = () => {
                   </div>
                 </div>
                 <hr />
-                <LoansModal shelfCurrentLoan={shelfCurrentLoan} mobile={false}/>
+                <LoansModal
+                  shelfCurrentLoan={shelfCurrentLoan}
+                  mobile={false}
+                  returnBook={returnBook}
+                />
               </div>
             ))}
           </>
@@ -147,8 +172,6 @@ export const Loans = () => {
         )}
       </div>
 
-
-
       {/* Mobile */}
       <div className="container d-lg-none mt-2">
         {shelfCurrentLoans.length > 0 ? (
@@ -157,73 +180,77 @@ export const Loans = () => {
 
             {shelfCurrentLoans.map((shelfCurrentLoan) => (
               <div key={shelfCurrentLoan.book.id}>
-                  <div className="d-flex justify-content-center align-items-center">
-                    {shelfCurrentLoan.book?.img ? (
-                      <img
-                        src={shelfCurrentLoan.book?.img}
-                        width="226"
-                        height="349"
-                        alt="Book"
-                      />
-                    ) : (
-                      <img
-                        src={require("./../../../Images/BooksImages/book-luv2code-1000.png")}
-                        width="226"
-                        height="349"
-                        alt="Book"
-                      />
-                    )}
-                  </div>
-                  <div className="card d-flex mt-5 mb-3">
-                    <div className="card-body container">
-                      <div className="mt-3">
-                        <h4>Loan Options</h4>
-                        {shelfCurrentLoan.daysLeft > 0 && (
-                          <p className="text-secondary">
-                            Due in {shelfCurrentLoan.daysLeft} days.
-                          </p>
-                        )}
-                        {shelfCurrentLoan.daysLeft === 0 && (
-                          <p className="text-success">Due Today.</p>
-                        )}
-                        {shelfCurrentLoan.daysLeft < 0 ? (
-                          <p className="text-danger">
-                            Past due by {Math.abs(shelfCurrentLoan.daysLeft)}{" "}
-                            days.
-                          </p>
-                        ) : null}
-                        <div className="list-group mt-3">
-                          <button
-                            className="list-group-item list-group-item-action"
-                            aria-current="true"
-                            data-bs-toggle="modal"
-                            data-bs-target={`#mobilemodal${shelfCurrentLoan.book.id}`} /*Bootstrap 的 声明式用法，点击时打开目标 id 的 Modal。*/
-                          >
-                            Manage Loans
-                          </button>
-                          <Link
-                            to={"search"}
-                            className="list-group-item list-group-item-action"
-                          >
-                            Search more books?
-                          </Link>
-                        </div>
-                      </div>
-                      <hr />
-                      <p className="mt-3">
-                        Help other find their adventure by reviewing your loan.
-                      </p>
-                      <Link
-                        className="btn btn-primary"
-                        to={`/checkout/${shelfCurrentLoan.book.id}`}
-                      >
-                        Leave a review
-                      </Link>
-                    </div>
-                  </div>
-                  <hr />
-                  <LoansModal shelfCurrentLoan={shelfCurrentLoan} mobile={true}/>
+                <div className="d-flex justify-content-center align-items-center">
+                  {shelfCurrentLoan.book?.img ? (
+                    <img
+                      src={shelfCurrentLoan.book?.img}
+                      width="226"
+                      height="349"
+                      alt="Book"
+                    />
+                  ) : (
+                    <img
+                      src={require("./../../../Images/BooksImages/book-luv2code-1000.png")}
+                      width="226"
+                      height="349"
+                      alt="Book"
+                    />
+                  )}
                 </div>
+                <div className="card d-flex mt-5 mb-3">
+                  <div className="card-body container">
+                    <div className="mt-3">
+                      <h4>Loan Options</h4>
+                      {shelfCurrentLoan.daysLeft > 0 && (
+                        <p className="text-secondary">
+                          Due in {shelfCurrentLoan.daysLeft} days.
+                        </p>
+                      )}
+                      {shelfCurrentLoan.daysLeft === 0 && (
+                        <p className="text-success">Due Today.</p>
+                      )}
+                      {shelfCurrentLoan.daysLeft < 0 ? (
+                        <p className="text-danger">
+                          Past due by {Math.abs(shelfCurrentLoan.daysLeft)}{" "}
+                          days.
+                        </p>
+                      ) : null}
+                      <div className="list-group mt-3">
+                        <button
+                          className="list-group-item list-group-item-action"
+                          aria-current="true"
+                          data-bs-toggle="modal"
+                          data-bs-target={`#mobilemodal${shelfCurrentLoan.book.id}`} /*Bootstrap 的 声明式用法，点击时打开目标 id 的 Modal。*/
+                        >
+                          Manage Loans
+                        </button>
+                        <Link
+                          to={"search"}
+                          className="list-group-item list-group-item-action"
+                        >
+                          Search more books?
+                        </Link>
+                      </div>
+                    </div>
+                    <hr />
+                    <p className="mt-3">
+                      Help other find their adventure by reviewing your loan.
+                    </p>
+                    <Link
+                      className="btn btn-primary"
+                      to={`/checkout/${shelfCurrentLoan.book.id}`}
+                    >
+                      Leave a review
+                    </Link>
+                  </div>
+                </div>
+                <hr />
+                <LoansModal 
+                shelfCurrentLoan={shelfCurrentLoan} 
+                mobile={true} 
+                returnBook={returnBook}
+                />
+              </div>
             ))}
           </>
         ) : (
