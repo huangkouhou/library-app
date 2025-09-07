@@ -105,7 +105,8 @@ export const HistoryPage = () => {
                         />
                       )}
                     </div>
-                    <div className="col">
+                  </div>
+                    <div className="col-md-10">
                       <div className="card-body">
                         <h5 className="card-title">{history.author}</h5>
                         <h4>{history.title}</h4>
@@ -121,7 +122,6 @@ export const HistoryPage = () => {
                         </p>
                       </div>
                     </div>
-                  </div>
                 </div>
               </div>
             </div>
