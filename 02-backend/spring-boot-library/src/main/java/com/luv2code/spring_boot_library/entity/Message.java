@@ -1,18 +1,18 @@
 package com.luv2code.spring_boot_library.entity;
 
-import jakarta.persistence.Entity;
+
 import lombok.Data;
+
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "messages")
 @Data
-
 public class Message {
 
     public Message(){}
 
-    public Message(String title, String question){
+    public Message(String title, String question) {
         this.title = title;
         this.question = question;
     }
@@ -21,6 +21,9 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private Long id;
+
+    @Column(name="user_email")
+    private String userEmail;
 
     @Column(name="title")
     private String title;
@@ -35,6 +38,5 @@ public class Message {
     private String response;
 
     @Column(name="closed")
-    private String closed;
-
+    private boolean closed;
 }
