@@ -4,8 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "History")
+@Table(name = "history")
 @Data
+
 public class History {
 
     public History(){}
@@ -41,10 +42,10 @@ public class History {
     @Column(name="author")
     private String author;
 
-    @Column(name="description")
+    @Column(name="description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name="img")
+    @Column(name="img", columnDefinition = "LONGTEXT")
     private String img;
 
 }

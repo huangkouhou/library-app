@@ -124,38 +124,46 @@ export const BookCheckoutPage = () => {
   //already left a review?
   useEffect(() => {
     const fetchUserReviewBook = async () => {
-        if (isAuthenticated){
-          const accessToken = await getAccessTokenSilently();
-          const url = `http://localhost:8080/api/reviews/secure/user/book?bookId=${bookId}`;
-          const requestOptions = {
-            method: 'GET',
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              'Content-Type':'application/json'
-            }
-          };
-          const userReview = await fetch(url, requestOptions);
-          if (!userReview.ok){
-            throw new Error('Something went wrong');
-          }
-          const userReviewResponseJson = await userReview.json();
-          setIsReviewLeft(userReviewResponseJson);
+      if (isAuthenticated) {
+        const accessToken = await getAccessTokenSilently({
+          authorizationParams: {
+            audience: "http://localhost:8080",
+            scope: "openid profile email",
+          },
+        });
+        const url = `http://localhost:8080/api/reviews/secure/user/book?bookId=${bookId}`;
+        const requestOptions = {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        };
+        const userReview = await fetch(url, requestOptions);
+        if (!userReview.ok) {
+          throw new Error("Something went wrong");
         }
-        setIsLoadingUserReview(false);
-    }
+        const userReviewResponseJson = await userReview.json();
+        setIsReviewLeft(userReviewResponseJson);
+      }
+      setIsLoadingUserReview(false);
+    };
     fetchUserReviewBook().catch((error: any) => {
-        setIsLoadingUserReview(false);
-        setHttpError(error.message);
-    })
+      setIsLoadingUserReview(false);
+      setHttpError(error.message);
+    });
   }, [isAuthenticated, getAccessTokenSilently, bookId]);
-
-
 
   //currentLoansCount useEffect(因为是自定义的api所以需要const requestOptions)
   useEffect(() => {
     const fetchUserCurrentLoansCount = async () => {
       if (isAuthenticated) {
-        const accessToken = await getAccessTokenSilently();
+        const accessToken = await getAccessTokenSilently({
+          authorizationParams: {
+            audience: "http://localhost:8080",
+            scope: "openid profile email",
+          },
+        });
         const url = `http://localhost:8080/api/books/secure/currentloans/count`;
         //requestOptions 就是你传给 fetch(url, options) 的第二个参数，用来告诉浏览器这次请求要怎么发
         const requestOptions = {
@@ -179,7 +187,7 @@ export const BookCheckoutPage = () => {
       setIsLoadingCurrentLoansCount(false);
       setHttpError(error.message);
     });
-  }, [isAuthenticated,getAccessTokenSilently, isCheckedOut]);
+  }, [isAuthenticated, getAccessTokenSilently, isCheckedOut]);
 
   //Is Book CheckedOut useEffect
   useEffect(() => {
@@ -230,44 +238,47 @@ export const BookCheckoutPage = () => {
   }
 
   //checkoutBook function
-  async function checkoutBook(){
+  async function checkoutBook() {
     const accessToken = await getAccessTokenSilently();
     const url = `http://localhost:8080/api/books/secure/checkout?bookId=${book?.id}`;
     const requestOptions = {
-      method: 'PUT',
+      method: "PUT",
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      }
+        "Content-Type": "application/json",
+      },
     };
     const checkoutResponse = await fetch(url, requestOptions);
     if (!checkoutResponse.ok) {
-      throw new Error('Something went wrong!');
+      throw new Error("Something went wrong!");
     }
     setIsCheckedOut(true);
-  };
+  }
 
-
-   //submit review function
-  async function submitReview(starInput: number, reviewDescription: string){
+  //submit review function
+  async function submitReview(starInput: number, reviewDescription: string) {
     let bookId: number = 0;
-    if (book?.id){
+    if (book?.id) {
       bookId = book.id;
     }
-    const reviewRequestModel = new ReviewRequestModel(starInput, bookId, reviewDescription);
+    const reviewRequestModel = new ReviewRequestModel(
+      starInput,
+      bookId,
+      reviewDescription
+    );
     const url = `http://localhost:8080/api/reviews/secure`;
     const accessToken = await getAccessTokenSilently();
     const requestOptions = {
-      method: 'POST',
+      method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(reviewRequestModel)
+      body: JSON.stringify(reviewRequestModel),
     };
     const returnResponse = await fetch(url, requestOptions);
     if (!returnResponse.ok) {
-      throw new Error('Something went wrong!');
+      throw new Error("Something went wrong!");
     }
     setIsReviewLeft(true);
   }
@@ -333,16 +344,16 @@ export const BookCheckoutPage = () => {
             <StarsReview rating={totalStars} size={32} />
           </div>
         </div>
-          <CheckoutAndReviewBox
-            book={book}
-            mobile={false}
-            currentLoansCount={currentLoansCount}
-            isAuthenticated={isAuthenticated}
-            isCheckedOut={isCheckedOut}
-            checkoutBook={checkoutBook}
-            isReviewLeft={isReviewLeft}
-            submitReview={submitReview}
-          />
+        <CheckoutAndReviewBox
+          book={book}
+          mobile={false}
+          currentLoansCount={currentLoansCount}
+          isAuthenticated={isAuthenticated}
+          isCheckedOut={isCheckedOut}
+          checkoutBook={checkoutBook}
+          isReviewLeft={isReviewLeft}
+          submitReview={submitReview}
+        />
         <hr />
         <LatestReviews reviews={reviews} bookId={book?.id} mobile={true} />
       </div>

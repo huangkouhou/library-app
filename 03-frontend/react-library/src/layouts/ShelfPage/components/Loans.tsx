@@ -10,15 +10,21 @@ export const Loans = () => {
   const [httpError, setHttpError] = useState(null);
 
   //Current Loans
-  const [shelfCurrentLoans, setShelfCurrentLoans] = useState<ShelfCurrentLoans[]>([]);
+  const [shelfCurrentLoans, setShelfCurrentLoans] = useState<
+    ShelfCurrentLoans[]
+  >([]);
   const [isLoadingUserLoans, setIsLoadingUserLoans] = useState(true);
   const [checkout, setCheckout] = useState(false);
-
 
   useEffect(() => {
     const fetchUserCurrentLoans = async () => {
       if (isAuthenticated) {
-        const accessToken = await getAccessTokenSilently();
+        const accessToken = await getAccessTokenSilently({
+          authorizationParams: {
+            audience: "http://localhost:8080",
+            scope: "openid profile email",
+          },
+        });
         const url = `http://localhost:8080/api/books/secure/currentloans`;
         const responseOptions = {
           method: "GET",
@@ -56,46 +62,46 @@ export const Loans = () => {
     );
   }
 
-
   //return book function
-  async function returnBook(bookId: number){
+  async function returnBook(bookId: number) {
     const url = `http://localhost:8080/api/books/secure/return?bookId=${bookId}`;
-    const accessToken = await getAccessTokenSilently();
+    const accessToken = await getAccessTokenSilently({
+      authorizationParams: {
+        audience: "http://localhost:8080",
+        scope: "openid profile email",
+      },
+    });
     const requestOptions = {
-      method: 'PUT',
+      method: "PUT",
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      }
+        "Content-Type": "application/json",
+      },
     };
-      const returnResponse = await fetch(url, requestOptions);
-      if (!returnResponse.ok){
-        throw new Error('Something went wrong!');
-      }
-      setCheckout(!checkout);// 切换布尔值，触发上面的 useEffect 重新拉数据
+    const returnResponse = await fetch(url, requestOptions);
+    if (!returnResponse.ok) {
+      throw new Error("Something went wrong!");
+    }
+    setCheckout(!checkout); // 切换布尔值，触发上面的 useEffect 重新拉数据
   }
 
   //renew loan function
-  async function renewLoan(bookId: number){
+  async function renewLoan(bookId: number) {
     const url = `http://localhost:8080/api/books/secure/renew/loan?bookId=${bookId}`;
     const accessToken = await getAccessTokenSilently();
     const requestOptions = {
-      method: 'PUT',
+      method: "PUT",
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      }
+        "Content-Type": "application/json",
+      },
     };
     const returnResponse = await fetch(url, requestOptions);
-    if (!returnResponse.ok){
-      throw new Error('Something went wrong!');
+    if (!returnResponse.ok) {
+      throw new Error("Something went wrong!");
     }
-      setCheckout(!checkout);// 切换布尔值，触发上面的 useEffect 重新拉数据
-    
-
+    setCheckout(!checkout); // 切换布尔值，触发上面的 useEffect 重新拉数据
   }
-
-
 
   return (
     <div>
@@ -266,11 +272,11 @@ export const Loans = () => {
                   </div>
                 </div>
                 <hr />
-                <LoansModal 
-                shelfCurrentLoan={shelfCurrentLoan} 
-                mobile={true} 
-                returnBook={returnBook}
-                renewLoan={renewLoan}
+                <LoansModal
+                  shelfCurrentLoan={shelfCurrentLoan}
+                  mobile={true}
+                  returnBook={returnBook}
+                  renewLoan={renewLoan}
                 />
               </div>
             ))}
