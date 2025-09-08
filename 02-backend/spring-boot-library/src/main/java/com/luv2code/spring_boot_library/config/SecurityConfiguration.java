@@ -22,7 +22,7 @@ public class SecurityConfiguration {
                 .requestMatchers(
                         "/api/books/secure/**",
                         "/api/reviews/secure/**",//secure our review
-                        "/api/messages/secure/**",
+                        "/api/messages/secure/**",//secure our message
                         "/api/admin/secure/**"
                 ).authenticated()
                 .anyRequest().permitAll()
