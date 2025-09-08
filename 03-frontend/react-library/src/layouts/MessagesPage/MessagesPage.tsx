@@ -54,11 +54,6 @@ export const MessagesPage = () => {
           >
             {messagesClick ? <p>Message</p> : <></>}
           </div>
-          <div>
-            <button type='button' className="btn btn-primary mt-3">
-                Submit Question
-            </button>
-          </div>
         </div>
       </div>
     </div>
