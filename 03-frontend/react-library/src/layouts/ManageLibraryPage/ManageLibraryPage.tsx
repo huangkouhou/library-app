@@ -1,5 +1,6 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { useEffect, useState } from 'react';
+import { AdminMessages } from './components/AdminMessages';
 
 export const ManageLibraryPage = () => {
 
@@ -70,7 +71,7 @@ export const ManageLibraryPage = () => {
                     </div>
                     <div className='tab-pane fade' id='nav-messages' role='tabpanel'
                         aria-labelledby='nav-messages-tab'>
-                        Admin Messages
+                        {messagesClick ? <AdminMessages/> : <></>}
                     </div>
                 </div>
             </div>
