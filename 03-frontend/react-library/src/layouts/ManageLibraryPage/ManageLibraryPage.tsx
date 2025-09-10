@@ -10,11 +10,27 @@ export const ManageLibraryPage = () => {
     const [changeQuantityOfBooksClick, setChangeQuantityOfBooksClick] = useState(false);
     const [messagesClick, setMessagesClick] = useState(false);
 
+
     useEffect(() => {
         const fetchRoles = async () => {
 
         };
     })
+
+    function addBookClickFunction(){
+        setChangeQuantityOfBooksClick(false);
+        setMessagesClick(false);
+    }
+
+    function changeQuantityOfBooksClickFunction(){
+        setChangeQuantityOfBooksClick(true);
+        setMessagesClick(false);
+    }
+
+    function messagesClickFunction(){
+        setChangeQuantityOfBooksClick(false);
+        setMessagesClick(true);
+    }
     
 
     return (
@@ -23,19 +39,19 @@ export const ManageLibraryPage = () => {
                 <h3>Manage Library</h3>
                 <nav>
                     <div className='nav nav-tabs' id='nav-tab' role='tablist'>
-                        <button className='nav-link active' id='nav-add-book-tab' data-bs-toggle='tab'
+                        <button onClick={addBookClickFunction} className='nav-link active' id='nav-add-book-tab' data-bs-toggle='tab'
                             data-bs-target='#nav-add-book' type='button' role='tab' aria-controls='nav-add-book'
                             aria-selected='false'
                         >
                             Add new book
                         </button>
-                        <button className='nav-link' id='nav-quantity-tab' data-bs-toggle='tab'
+                        <button onClick={changeQuantityOfBooksClickFunction} className='nav-link' id='nav-quantity-tab' data-bs-toggle='tab'
                             data-bs-target='#nav-quantity' type='button' role='tab' aria-controls='nav-add-book'
                             aria-selected='true'
                         >
                             Change quantity
                         </button>
-                        <button className='nav-link' id='nav-messages-tab' data-bs-toggle='tab'
+                        <button onClick={messagesClickFunction} className='nav-link' id='nav-messages-tab' data-bs-toggle='tab'
                             data-bs-target='#nav-messages' type='button' role='tab' aria-controls='nav-messages'
                             aria-selected='false'
                         >
