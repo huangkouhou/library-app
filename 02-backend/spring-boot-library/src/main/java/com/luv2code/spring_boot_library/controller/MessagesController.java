@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @CrossOrigin("http://localhost:3000")
 @RestController
 @RequestMapping("/api/messages")
-public class MessageController {
+public class MessagesController {
 
     private MessagesService messagesService;
 
@@ -28,7 +28,7 @@ public class MessageController {
     private static final String EMAIL_CLAIM = "https://library-app.local/email";
     private static final String ROLES_CLAIM = "https://library-app.local/roles";
 
-    public MessageController(MessagesService messagesService) {
+    public MessagesController(MessagesService messagesService) {
         this.messagesService = messagesService;
     }
 
