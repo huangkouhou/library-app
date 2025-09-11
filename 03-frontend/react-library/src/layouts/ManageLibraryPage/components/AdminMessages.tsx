@@ -4,6 +4,7 @@ import MessageModel from "../../../models/MessageModel";
 import { SpinnerLoading } from "../../Utils/SpinnerLoading";
 import { Pagination } from "../../Utils/Pagination";
 import { AdminMessage } from "./AdminMessage";
+import AdminMessageRequest from "../../../models/AdminMessageRequest";
 
 export const AdminMessages = () => {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -32,7 +33,9 @@ export const AdminMessages = () => {
             scope: "openid profile email",
           },
         });
-        const url = `http://localhost:8080/api/messages/search/findByClosed?closed=false&page=${currentPage - 1}&size=${messagesPerPage}`;
+        const url = `http://localhost:8080/api/messages/search/findByClosed?closed=false&page=${
+          currentPage - 1
+        }&size=${messagesPerPage}`;
         const responseOptions = {
           method: "GET",
           headers: {
@@ -50,13 +53,13 @@ export const AdminMessages = () => {
         setTotalPages(messagesResponseJson.page.totalPages);
       }
       setIsLoadingMessages(false);
-    }
+    };
     fetchUserMessages().catch((error: any) => {
       setIsLoadingMessages(false);
       setHttpError(error.message);
     });
     window.scrollTo(0, 0);
-  }, [isAuthenticated, getAccessTokenSilently, currentPage, btnSubmit]);
+  }, [isAuthenticated, getAccessTokenSilently, currentPage, btnSubmit, messagesPerPage]);
 
   if (isLoadingMessages) {
     return <SpinnerLoading />;
@@ -70,22 +73,66 @@ export const AdminMessages = () => {
     );
   }
 
+  async function submitResponseToQuestion(id: number, response: string) {
+    const url = `http://localhost:8080/api/messages/secure/admin/message`;
+    const accessToken = await getAccessTokenSilently({
+      authorizationParams: {
+        audience: "http://localhost:8080",
+        scope: "openid profile email",
+        cacheMode: 'off' 
+      },
+    });
+    console.log(JSON.parse(atob(accessToken.split('.')[1])));
+
+
+    if (isAuthenticated && id !== null && response !== "") {
+      const messageAdminRequestModel: AdminMessageRequest =
+        new AdminMessageRequest(id, response);
+      const requestOptions = {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(messageAdminRequestModel),
+      };
+
+      const messageAdminRequestModelResponse = await fetch(url, requestOptions);
+      if (!messageAdminRequestModelResponse.ok) {
+        throw new Error("Something went wrong!");
+      }
+      
+
+
+      setBtnSubmit(!btnSubmit);
+    }
+  }
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
     <div>
-        {messages.length > 0 ?
+      {messages.length > 0 ? (
         <>
-            <h5>Pending Q/A: </h5>
-            {messages.map(message => (
-                <AdminMessage message={message} key={message.id}/>
-            ))}
+          <h5>Pending Q/A: </h5>
+          {messages.map((message) => (
+            <AdminMessage
+              message={message}
+              key={message.id}
+              submitResponseToQuestion={submitResponseToQuestion}
+            />
+          ))}
         </>
-        :
+      ) : (
         <h5>No Pending Q/A</h5>
-        }
-        {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate}/>}
+      )}
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          paginate={paginate}
+        />
+      )}
     </div>
-  )
+  );
 };
