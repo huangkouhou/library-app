@@ -21,6 +21,25 @@ export const AddNewBook = () => {
         setCategory(value);
     }
 
+    async function base64ConversionForImages(e: any){
+        if (e.target.files[0]){
+            getBase64(e.target.files[0]);
+        }
+    }
+//用户通过文件上传控件选择一张图片后，读取这张图片文件，
+// 并将其内容转换成 Base64 编码的字符串，然后将这个字符串存入 React 组件的状态 (state) 中。
+    function getBase64(file: any){
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function() {
+            setSelectedImage(reader.result);
+        };
+        reader.onerror = function(error){
+            console.log('Error', error);
+        }
+    }
+
+
     return(
         <div>
             {displaySuccess &&
@@ -74,7 +93,7 @@ export const AddNewBook = () => {
                             <input type='number' className="form-control" name='Copies' required
                                 onChange={e => setCopies(Number(e.target.value))} value={copies}/>
                         </div>
-                        <input type='file' />
+                        <input type='file' onChange={e => base64ConversionForImages(e)}/>
                         <div>
                             <button type='button' className="btn btn-primary mt-3">
                                 Add Book
