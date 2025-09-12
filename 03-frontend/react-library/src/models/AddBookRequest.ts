@@ -14,3 +14,5 @@ class AddBookRequest {
         this.category = category;
     }
 }
+
+export default AddBookRequest;
