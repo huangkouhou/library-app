@@ -23,6 +23,7 @@ public class SecurityConfiguration {
                         "/api/books/secure/**",
                         "/api/reviews/secure/**",//secure our review
                         "/api/messages/secure/**",//secure our message
+                        "/api/admin/secure/**",
                         "/api/admin/secure/**"
                 ).authenticated()
                 .anyRequest().permitAll()
