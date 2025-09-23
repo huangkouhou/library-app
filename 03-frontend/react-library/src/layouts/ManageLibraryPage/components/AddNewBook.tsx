@@ -1,5 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useState } from "react";
+import AddBookRequest from "../../../models/AddBookRequest";
 
 export const AddNewBook = () => {
 
@@ -21,6 +22,7 @@ export const AddNewBook = () => {
         setCategory(value);
     }
 
+    //files[0] 取第一个文件（一般就是用户选中的第一个图片）
     async function base64ConversionForImages(e: any){
         if (e.target.files[0]){
             getBase64(e.target.files[0]);
@@ -39,6 +41,47 @@ export const AddNewBook = () => {
         }
     }
 
+    async function submitNewBook(){
+        const url = `http://localhost:8080/api/admin/secure/add/book`;
+        const accessToken = await getAccessTokenSilently({
+          authorizationParams: {
+            audience: "http://localhost:8080",
+            scope: "openid profile email",
+          }
+        });
+        console.log("accessToken:", accessToken);
+        if (isAuthenticated && title !== '' && author !== '' && category !== 'Category'
+            && description !== '' && copies >= 0){
+                const book: AddBookRequest = new AddBookRequest(title, author, description, copies, category);
+                book.img = selectedImage;
+                const requestOptions = {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(book)
+                };
+
+                const submitNewBookResponse = await fetch(url, requestOptions);
+                if (!submitNewBookResponse.ok){
+                    throw new Error('Something went wrong!');
+                }
+                // 如果后端返回成功（书籍添加成功）当你把它们设为空，React 会重新渲染组件 → 输入框里的值就被清掉。
+                //就像你在网页上填完一个“新增书籍”的表单并提交后，页面显示“新增成功！”，同时表单清空，可以立刻继续录入下一本。
+                setTitle('');
+                setAuthor('');
+                setDescription('');
+                setCopies(0);
+                setCategory('Category');
+                setSelectedImage(null);
+                setDisplayWarning(false);
+                setDisplaySuccess(true);
+            } else {
+                setDisplayWarning(true);
+                setDisplaySuccess(false);
+            } 
+    }
 
     return(
         <div>
@@ -95,7 +138,7 @@ export const AddNewBook = () => {
                         </div>
                         <input type='file' onChange={e => base64ConversionForImages(e)}/>
                         <div>
-                            <button type='button' className="btn btn-primary mt-3">
+                            <button type='button' className="btn btn-primary mt-3" onClick={submitNewBook}>
                                 Add Book
                             </button>
                         </div>

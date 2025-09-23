@@ -18,7 +18,8 @@ public class Book {
     @Column(name = "author")
     private String author;
 
-    @Column(name = "description")
+    @Lob
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "copies", nullable = false)
@@ -30,6 +31,7 @@ public class Book {
     @Column(name = "category")
     private String category;
 
-    @Column(name = "img")
+    @Lob
+    @Column(name = "img", columnDefinition = "LONGTEXT")
     private String img;
 }

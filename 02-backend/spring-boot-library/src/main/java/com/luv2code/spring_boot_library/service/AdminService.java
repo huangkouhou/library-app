@@ -1,6 +1,5 @@
 package com.luv2code.spring_boot_library.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +13,6 @@ public class AdminService {
 
     private BookRepository bookRepository;
 
-    @Autowired
     public AdminService (BookRepository bookRepository){
         this.bookRepository = bookRepository;
     }

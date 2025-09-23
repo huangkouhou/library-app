@@ -17,7 +17,7 @@ import com.luv2code.spring_boot_library.service.AdminService;
 
 @CrossOrigin("http://localhost:3000")
 @RestController
-@RequestMapping("/api/books")
+@RequestMapping("/api/admin/secure")
 public class AdminController {
 
     private AdminService adminService;
@@ -28,7 +28,7 @@ public class AdminController {
         this.adminService = adminService;
     }
 
-    @PostMapping("/secure/admin/add/book")
+    @PostMapping("/add/book")
     public void postBook(@AuthenticationPrincipal Jwt jwt,
                          @RequestBody AddBookRequest addBookRequest) throws Exception{
 
