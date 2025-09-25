@@ -1,5 +1,7 @@
 package com.luv2code.spring_boot_library.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,20 @@ public class AdminService {
 
     public AdminService (BookRepository bookRepository){
         this.bookRepository = bookRepository;
+    }
+
+    public void increaseBookQuantity(Long bookId) throws Exception {
+
+        Optional<Book> book = bookRepository.findById(bookId);
+
+        if (!book.isPresent()){
+            throw new Exception("Book not found");
+        }
+
+        book.get().setCopiesAvailable(book.get().getCopiesAvailable() + 1);
+        book.get().setCopies(book.get().getCopies() + 1);
+
+        bookRepository.save(book.get());
     }
 
     public void postBook(AddBookRequest addBookRequest){
