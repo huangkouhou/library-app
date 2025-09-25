@@ -42,6 +42,20 @@ public class AdminController {
         adminService.increaseBookQuantity(bookId);                       
     }
 
+    @PutMapping("/decrease/book/quantity")
+    public void decreaseBookQuantity(@AuthenticationPrincipal Jwt jwt,
+                                     @RequestParam Long bookId) throws Exception{
+
+    List<String> roles = jwt.getClaimAsStringList(ROLES_CLAIM);
+    boolean isAdmin = roles != null && roles.stream().anyMatch(r -> "admin".equalsIgnoreCase(r));
+    if (!isAdmin) {
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Administration page only.");
+    }
+        adminService.decreaseBookQuantity(bookId);    
+    
+    }
+
+
     @PostMapping("/add/book")
     public void postBook(@AuthenticationPrincipal Jwt jwt,
                          @RequestBody AddBookRequest addBookRequest) throws Exception{
