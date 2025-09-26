@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.luv2code.spring_boot_library.dao.BookRepository;
+import com.luv2code.spring_boot_library.dao.CheckoutRepository;
+import com.luv2code.spring_boot_library.dao.ReviewRepository;
 import com.luv2code.spring_boot_library.entity.Book;
 import com.luv2code.spring_boot_library.requestmodels.AddBookRequest;
 
@@ -14,9 +16,16 @@ import com.luv2code.spring_boot_library.requestmodels.AddBookRequest;
 public class AdminService {
 
     private BookRepository bookRepository;
+    private ReviewRepository reviewRepository;
+    private CheckoutRepository checkoutRepository;
 
-    public AdminService (BookRepository bookRepository){
+
+    public AdminService (BookRepository bookRepository, 
+                         ReviewRepository reviewRepository, 
+                         CheckoutRepository checkoutRepository){
         this.bookRepository = bookRepository;
+        this.reviewRepository = reviewRepository;
+        this.checkoutRepository = checkoutRepository;
     }
 
     public void increaseBookQuantity(Long bookId) throws Exception {
@@ -58,6 +67,21 @@ public class AdminService {
         book.setCategory(addBookRequest.getCategory());
         book.setImg(addBookRequest.getImg());
         bookRepository.save(book);
+    }
+
+    //delete book
+    public void deleteBook(Long bookId) throws Exception {
+
+        Optional<Book> book = bookRepository.findById(bookId);
+
+        if (!book.isPresent()) {
+            throw new Exception("Book not found");
+        }
+
+        bookRepository.delete(book.get());
+        checkoutRepository.deleteAllByBookId(bookId);
+        reviewRepository.deleteAllByBookId(bookId);
+
     }
 
 }
