@@ -1,19 +1,37 @@
 import { useEffect, useState } from "react";
 import BookModel from "../../../models/BookModel";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const ChangeQuantityOfBook: React.FC<{book: BookModel}> = (props) => {
 
+    const { getAccessTokenSilently } = useAuth0();
     const [quantity, setQuantity] = useState<number>(0);
     const [remaining, setRemaining] = useState<number>(0);
 
     useEffect(() => {
-        const fetchBookInState = () => {
-            props.book.copies ? setQuantity(props.book.copies) : setQuantity(0);//如果 props.book.copies 有值 → 用 setQuantity(props.book.copies)
-            props.book.copiesAvailable ? setRemaining(props.book.copiesAvailable) : setRemaining(0);
+        setQuantity(props.book.copies ?? 0);
+        setRemaining(props.book.copiesAvailable ?? 0);
+    }, [props.book]);
+
+    async function increaseQuantity(){
+        const url = `http://localhost:8080/api/admin/secure/increase/book/quantity?bookId=${props.book?.id}`;
+        const accessToken = await getAccessTokenSilently();
+        const requestOptions: RequestInit = {
+            method: 'PUT', 
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+            }
         };
-        //fetchBookInState 是一个普通函数，用来把父组件传进来的 book 对象里的 copies 和 copiesAvailable 保存到当前组件的状态里（quantity 和 remaining）。
-        fetchBookInState();
-    });
+
+        const quantityUpdateResponse = await fetch(url, requestOptions);
+        if (!quantityUpdateResponse.ok){
+            throw new Error('Something went wrong!');
+        }
+        setQuantity(quantity + 1);
+        setRemaining(remaining + 1);
+
+    }
 
 
     return (
@@ -57,9 +75,11 @@ export const ChangeQuantityOfBook: React.FC<{book: BookModel}> = (props) => {
                     <button className="m-1 btn btn-md btn-danger">Delete</button>
                 </div>
             </div>
-            <button className="m-1 btn btn-md main-color text-white">Add Quantity</button>
+            <button className="m-1 btn btn-md main-color text-white" onClick={increaseQuantity}>Add Quantity</button>
             <button className="m-1 btn btn-md btn-warning">Decrease Quantity</button>
         </div>
     </div>
     );
 }
+
+
