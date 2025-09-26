@@ -42,6 +42,7 @@ public class AdminController {
         adminService.increaseBookQuantity(bookId);                       
     }
 
+    
     @PutMapping("/decrease/book/quantity")
     public void decreaseBookQuantity(@AuthenticationPrincipal Jwt jwt,
                                      @RequestParam Long bookId) throws Exception{
