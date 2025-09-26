@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,7 +43,7 @@ public class AdminController {
         adminService.increaseBookQuantity(bookId);                       
     }
 
-    
+
     @PutMapping("/decrease/book/quantity")
     public void decreaseBookQuantity(@AuthenticationPrincipal Jwt jwt,
                                      @RequestParam Long bookId) throws Exception{
@@ -67,6 +68,18 @@ public class AdminController {
         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Administration page only.");
     }
         adminService.postBook(addBookRequest);                       
+    }
+
+    @DeleteMapping("/delete/book")
+    public void deleteBook(@AuthenticationPrincipal Jwt jwt,
+                           @RequestParam Long bookId) throws Exception {
+
+    List<String> roles = jwt.getClaimAsStringList(ROLES_CLAIM);
+    boolean isAdmin = roles != null && roles.stream().anyMatch(r -> "admin".equalsIgnoreCase(r));
+    if (!isAdmin) {
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Administration page only.");
+    }
+        adminService.deleteBook(bookId);
     }
 
 }
