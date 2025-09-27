@@ -9,7 +9,7 @@ export const ChangeQuantityOfBook: React.FC<{book: BookModel}> = (props) => {
     const [remaining, setRemaining] = useState<number>(0);
 
     useEffect(() => {
-        setQuantity(props.book.copies ?? 0);
+        setQuantity(props.book.copies ?? 0);//把 props.book.copies 的值存到 quantity 这个 state 里。如果 props.book.copies 是 null 或 undefined，就用 0。
         setRemaining(props.book.copiesAvailable ?? 0);
     }, [props.book]);
 
@@ -30,6 +30,26 @@ export const ChangeQuantityOfBook: React.FC<{book: BookModel}> = (props) => {
         }
         setQuantity(quantity + 1);
         setRemaining(remaining + 1);
+
+    }
+
+    async function decreaseQuantity(){
+        const url = `http://localhost:8080/api/admin/secure/decrease/book/quantity?bookId=${props.book?.id}`;
+        const accessToken = await getAccessTokenSilently();
+        const requestOptions: RequestInit = {
+            method: 'PUT', 
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+            }
+        };
+
+        const quantityUpdateResponse = await fetch(url, requestOptions);
+        if (!quantityUpdateResponse.ok){
+            throw new Error('Something went wrong!');
+        }
+        setQuantity(quantity - 1);
+        setRemaining(remaining - 1);
 
     }
 
@@ -76,7 +96,7 @@ export const ChangeQuantityOfBook: React.FC<{book: BookModel}> = (props) => {
                 </div>
             </div>
             <button className="m-1 btn btn-md main-color text-white" onClick={increaseQuantity}>Add Quantity</button>
-            <button className="m-1 btn btn-md btn-warning">Decrease Quantity</button>
+            <button className="m-1 btn btn-md btn-warning" onClick={decreaseQuantity}>Decrease Quantity</button>
         </div>
     </div>
     );
