@@ -14,6 +14,8 @@ export const ChangeQuantityOfBooks = () => {
     const [totalAmountOfBooks, setTotalAmountOfBooks] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
 
+    const [bookDelete, setBookDelete] = useState(false);
+
     useEffect(() => {
         const fetchBooks = async() => {
             const baseUrl: string = `http://localhost:8080/api/books?page=${currentPage - 1}&size=${booksPerPage}`;
@@ -56,7 +58,7 @@ export const ChangeQuantityOfBooks = () => {
         })
         //跳到页面顶部
         window.scrollTo(0, 0);
-    }, [currentPage]); 
+    }, [currentPage, bookDelete]); 
 
     //indexOfLastBook 是当前页在数组中的结束下标（slice 的右开界）indexOfFirstBook 是当前页在数组中的开始下标（slice 的左闭界）
     const indexOfLastBook: number = currentPage * booksPerPage;
@@ -66,6 +68,9 @@ export const ChangeQuantityOfBooks = () => {
 
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+    //定义了一个函数 deleteBook，作用就是切换布尔状态 bookDelete 的值。相当于每点一次就反转一次状态。
+    const deleteBook = () => setBookDelete(!bookDelete);
 
     if (isLoading){
         return (
@@ -92,7 +97,7 @@ export const ChangeQuantityOfBooks = () => {
                         {indexOfFirstBook + 1} to {lastItem} of {totalAmountOfBooks} items:
                     </p>
                     {books.map(book => (
-                        <ChangeQuantityOfBook key={book.id} book={book} />
+                        <ChangeQuantityOfBook key={book.id} book={book} deleteBook={deleteBook}/>
                     ))}
                 </>
                 :
