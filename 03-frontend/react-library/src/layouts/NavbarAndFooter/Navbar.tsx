@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { SpinnerLoading } from "../Utils/SpinnerLoading";
 import { useAuth0 } from "@auth0/auth0-react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Navbar = () => {
   const [roles, setRoles] = useState<string[] | null>(null);
@@ -25,17 +25,14 @@ export const Navbar = () => {
         return;
       }
       const claims = await getIdTokenClaims();
-      const fetchedRoles =
-        claims?.["https://luv2code-react-library.com/roles"] ?? [];
+      const fetchedRoles = claims?.["https://library-app.local/roles"] ?? [];
       setRoles(fetchedRoles);
       setLoading(false);
     };
     fetchRoles();
   }, [isAuthenticated, getIdTokenClaims]);
 
-  // ==========================================================
-  // VVVV 在这里添加新的 useEffect 来获取 Access Token VVVV
-  // ==========================================================
+
   useEffect(() => {
     const getAndLogToken = async () => {
       // 只有在用户已登录时才执行获取 Token 的操作
@@ -58,9 +55,6 @@ export const Navbar = () => {
 
     getAndLogToken();
   }, [isAuthenticated, getAccessTokenSilently]); // 依赖数组，当 isAuthenticated 变化时执行
-  // ==========================================================
-  // ^^^^ useEffect 添加结束 ^^^^
-  // ==========================================================
 
   if (loading) {
     return <SpinnerLoading />;
@@ -111,7 +105,7 @@ export const Navbar = () => {
               </li>
             )}
 
-            {isAuthenticated && roles?.includes("admin") && (
+            {isAuthenticated && roles?.some(r => r.toLowerCase() === "admin") && (
               <li className="nav-item">
                 <NavLink className="nav-link" to="/admin">
                   Admin
