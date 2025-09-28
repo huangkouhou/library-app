@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.luv2code.spring_boot_library.requestmodels.ReviewRequest;
 import com.luv2code.spring_boot_library.service.ReviewService;
 
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("https://localhost:3000")
 @RestController
 @RequestMapping("/api/reviews")
 public class ReviewController {

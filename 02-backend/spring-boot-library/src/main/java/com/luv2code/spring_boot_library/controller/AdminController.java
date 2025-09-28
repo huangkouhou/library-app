@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.luv2code.spring_boot_library.requestmodels.AddBookRequest;
 import com.luv2code.spring_boot_library.service.AdminService;
 
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("https://localhost:3000")
 @RestController
 @RequestMapping("/api/admin/secure")
 public class AdminController {
