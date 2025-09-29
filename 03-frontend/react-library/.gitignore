@@ -26,3 +26,6 @@ yarn-error.log*
 .env
 localhost.conf
 ssl-localhost/
+
+application.properties
+luv2code-keystore.p12

@@ -20,7 +20,7 @@ export const HistoryPage = () => {
   useEffect(() => {
     const fetchUserHistory = async () => {
       if (isAuthenticated) {
-        const url = `http://localhost:8080/api/histories/search/findBooksByUserEmail?userEmail=${
+        const url = `https://localhost:8080/api/histories/search/findBooksByUserEmail?userEmail=${
           user?.email
         }&page=${currentPage - 1}&size=5`;
         const requestOptions = {

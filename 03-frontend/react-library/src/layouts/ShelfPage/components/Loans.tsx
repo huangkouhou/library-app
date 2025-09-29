@@ -21,11 +21,11 @@ export const Loans = () => {
       if (isAuthenticated) {
         const accessToken = await getAccessTokenSilently({
           authorizationParams: {
-            audience: "http://localhost:8080",
+            audience: "https://localhost:8080",
             scope: "openid profile email",
           },
         });
-        const url = `http://localhost:8080/api/books/secure/currentloans`;
+        const url = `https://localhost:8080/api/books/secure/currentloans`;
         const responseOptions = {
           method: "GET",
           headers: {
@@ -64,10 +64,10 @@ export const Loans = () => {
 
   //return book function
   async function returnBook(bookId: number) {
-    const url = `http://localhost:8080/api/books/secure/return?bookId=${bookId}`;
+    const url = `https://localhost:8080/api/books/secure/return?bookId=${bookId}`;
     const accessToken = await getAccessTokenSilently({
       authorizationParams: {
-        audience: "http://localhost:8080",
+        audience: "https://localhost:8080",
         scope: "openid profile email",
       },
     });
@@ -87,7 +87,7 @@ export const Loans = () => {
 
   //renew loan function
   async function renewLoan(bookId: number) {
-    const url = `http://localhost:8080/api/books/secure/renew/loan?bookId=${bookId}`;
+    const url = `https://localhost:8080/api/books/secure/renew/loan?bookId=${bookId}`;
     const accessToken = await getAccessTokenSilently();
     const requestOptions = {
       method: "PUT",

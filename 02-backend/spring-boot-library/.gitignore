@@ -41,3 +41,4 @@ auth0Config.ts
 !application-example.properties
 !auth0Config.example.ts
 !.env.example
+luv2code-keystore.p12
