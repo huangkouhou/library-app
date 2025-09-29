@@ -19,13 +19,8 @@ export const Loans = () => {
   useEffect(() => {
     const fetchUserCurrentLoans = async () => {
       if (isAuthenticated) {
-        const accessToken = await getAccessTokenSilently({
-          authorizationParams: {
-            audience: "https://localhost:8080",
-            scope: "openid profile email",
-          },
-        });
-        const url = `https://localhost:8080/api/books/secure/currentloans`;
+        const accessToken = await getAccessTokenSilently();
+        const url = `${process.env.REACT_APP_API}/books/secure/currentloans`;
         const responseOptions = {
           method: "GET",
           headers: {
@@ -64,13 +59,8 @@ export const Loans = () => {
 
   //return book function
   async function returnBook(bookId: number) {
-    const url = `https://localhost:8080/api/books/secure/return?bookId=${bookId}`;
-    const accessToken = await getAccessTokenSilently({
-      authorizationParams: {
-        audience: "https://localhost:8080",
-        scope: "openid profile email",
-      },
-    });
+    const url = `${process.env.REACT_APP_API}/books/secure/return?bookId=${bookId}`;
+    const accessToken = await getAccessTokenSilently();
     const requestOptions = {
       method: "PUT",
       headers: {
@@ -87,7 +77,7 @@ export const Loans = () => {
 
   //renew loan function
   async function renewLoan(bookId: number) {
-    const url = `https://localhost:8080/api/books/secure/renew/loan?bookId=${bookId}`;
+    const url = `${process.env.REACT_APP_API}/books/secure/renew/loan?bookId=${bookId}`;
     const accessToken = await getAccessTokenSilently();
     const requestOptions = {
       method: "PUT",

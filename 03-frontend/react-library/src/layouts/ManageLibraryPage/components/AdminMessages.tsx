@@ -33,7 +33,7 @@ export const AdminMessages = () => {
             scope: "openid profile email",
           },
         });
-        const url = `http://localhost:8080/api/messages/search/findByClosed?closed=false&page=${
+        const url = `${process.env.REACT_APP_API}/messages/search/findByClosed?closed=false&page=${
           currentPage - 1
         }&size=${messagesPerPage}`;
         const responseOptions = {
@@ -74,7 +74,7 @@ export const AdminMessages = () => {
   }
 
   async function submitResponseToQuestion(id: number, response: string) {
-    const url = `http://localhost:8080/api/messages/secure/admin/message`;
+    const url = `${process.env.REACT_APP_API}/messages/secure/admin/message`;
     const accessToken = await getAccessTokenSilently({
       authorizationParams: {
         audience: "http://localhost:8080",

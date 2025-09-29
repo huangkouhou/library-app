@@ -26,7 +26,7 @@ export const Messages = () => {
             scope: "openid profile email",
           },
         });
-        const url = `http://localhost:8080/api/messages/search/findByUserEmail?userEmail=${
+        const url = `${process.env.REACT_APP_API}/messages/search/findByUserEmail?userEmail=${
           user?.email
         }&page=${currentPage - 1}&size=${messagesPerPage}`;
         const responseOptions = {

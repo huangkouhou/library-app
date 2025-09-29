@@ -22,7 +22,7 @@ export const SearchBooksPage = () => {
     // ② 在 useEffect 里，根据“依赖数组”去更新状态
     useEffect(() => {//useEffect(() => { ... }, ...) 的回调函数，写副作用逻辑（取数、订阅、定时器等）。
         const fetchBooks = async() => {
-            const baseUrl: string = "http://localhost:8080/api/books";
+            const baseUrl: string = `${process.env.REACT_APP_API}/books`;
 
             let url: string = '';
 

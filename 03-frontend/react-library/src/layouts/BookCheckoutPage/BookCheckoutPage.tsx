@@ -40,7 +40,7 @@ export const BookCheckoutPage = () => {
   useEffect(() => {
     //useEffect(() => { ... }, ...) 的回调函数，写副作用逻辑（取数、订阅、定时器等）。
     const fetchBook = async () => {
-      const baseUrl: string = `http://localhost:8080/api/books/${bookId}`;
+      const baseUrl: string = `${process.env.REACT_APP_API}/books/${bookId}`;
 
       const response = await fetch(baseUrl);
 
@@ -73,7 +73,7 @@ export const BookCheckoutPage = () => {
   //Review useEffect
   useEffect(() => {
     const fetchBookReviews = async () => {
-      const reviewUrl: string = `http://localhost:8080/api/reviews/search/findByBookId?bookId=${bookId}`;
+      const reviewUrl: string = `${process.env.REACT_APP_API}/reviews/search/findByBookId?bookId=${bookId}`;
 
       const responseReviews = await fetch(reviewUrl);
 
@@ -131,7 +131,7 @@ export const BookCheckoutPage = () => {
             scope: "openid profile email",
           },
         });
-        const url = `http://localhost:8080/api/reviews/secure/user/book?bookId=${bookId}`;
+        const url = `${process.env.REACT_APP_API}/reviews/secure/user/book?bookId=${bookId}`;
         const requestOptions = {
           method: "GET",
           headers: {
@@ -164,7 +164,7 @@ export const BookCheckoutPage = () => {
             scope: "openid profile email",
           },
         });
-        const url = `http://localhost:8080/api/books/secure/currentloans/count`;
+        const url = `${process.env.REACT_APP_API}/books/secure/currentloans/count`;
         //requestOptions 就是你传给 fetch(url, options) 的第二个参数，用来告诉浏览器这次请求要怎么发
         const requestOptions = {
           method: "GET",
@@ -194,7 +194,7 @@ export const BookCheckoutPage = () => {
     const fetchUserCheckedOutBook = async () => {
       if (isAuthenticated) {
         const accessToken = await getAccessTokenSilently();
-        const url = `http://localhost:8080/api/books/secure/ischeckedout/byuser?bookId=${bookId}`;
+        const url = `${process.env.REACT_APP_API}/books/secure/ischeckedout/byuser?bookId=${bookId}`;
         const requestOptions = {
           method: "GET",
           headers: {
@@ -240,7 +240,7 @@ export const BookCheckoutPage = () => {
   //checkoutBook function
   async function checkoutBook() {
     const accessToken = await getAccessTokenSilently();
-    const url = `http://localhost:8080/api/books/secure/checkout?bookId=${book?.id}`;
+    const url = `${process.env.REACT_APP_API}/books/secure/checkout?bookId=${book?.id}`;
     const requestOptions = {
       method: "PUT",
       headers: {
@@ -266,7 +266,7 @@ export const BookCheckoutPage = () => {
       bookId,
       reviewDescription
     );
-    const url = `http://localhost:8080/api/reviews/secure`;
+    const url = `${process.env.REACT_APP_API}/reviews/secure`;
     const accessToken = await getAccessTokenSilently();
     const requestOptions = {
       method: "POST",
