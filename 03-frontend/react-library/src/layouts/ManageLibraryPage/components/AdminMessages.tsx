@@ -27,12 +27,7 @@ export const AdminMessages = () => {
   useEffect(() => {
     const fetchUserMessages = async () => {
       if (isAuthenticated) {
-        const accessToken = await getAccessTokenSilently({
-          authorizationParams: {
-            audience: "http://localhost:8080",
-            scope: "openid profile email",
-          },
-        });
+        const accessToken = await getAccessTokenSilently();
         const url = `${process.env.REACT_APP_API}/messages/search/findByClosed?closed=false&page=${
           currentPage - 1
         }&size=${messagesPerPage}`;
@@ -75,13 +70,7 @@ export const AdminMessages = () => {
 
   async function submitResponseToQuestion(id: number, response: string) {
     const url = `${process.env.REACT_APP_API}/messages/secure/admin/message`;
-    const accessToken = await getAccessTokenSilently({
-      authorizationParams: {
-        audience: "http://localhost:8080",
-        scope: "openid profile email",
-        cacheMode: 'off' 
-      },
-    });
+    const accessToken = await getAccessTokenSilently();
     console.log(JSON.parse(atob(accessToken.split('.')[1])));
 
 
