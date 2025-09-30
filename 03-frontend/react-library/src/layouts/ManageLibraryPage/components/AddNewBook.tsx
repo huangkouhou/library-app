@@ -43,12 +43,7 @@ export const AddNewBook = () => {
 
     async function submitNewBook(){
         const url = `${process.env.REACT_APP_API}/admin/secure/add/book`;
-        const accessToken = await getAccessTokenSilently({
-          authorizationParams: {
-            audience: "http://localhost:8080",
-            scope: "openid profile email",
-          }
-        });
+        const accessToken = await getAccessTokenSilently();
         console.log("accessToken:", accessToken);
         if (isAuthenticated && title !== '' && author !== '' && category !== 'Category'
             && description !== '' && copies >= 0){

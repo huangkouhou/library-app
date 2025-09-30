@@ -125,12 +125,7 @@ export const BookCheckoutPage = () => {
   useEffect(() => {
     const fetchUserReviewBook = async () => {
       if (isAuthenticated) {
-        const accessToken = await getAccessTokenSilently({
-          authorizationParams: {
-            audience: "http://localhost:8080",
-            scope: "openid profile email",
-          },
-        });
+        const accessToken = await getAccessTokenSilently();
         const url = `${process.env.REACT_APP_API}/reviews/secure/user/book?bookId=${bookId}`;
         const requestOptions = {
           method: "GET",
@@ -158,12 +153,7 @@ export const BookCheckoutPage = () => {
   useEffect(() => {
     const fetchUserCurrentLoansCount = async () => {
       if (isAuthenticated) {
-        const accessToken = await getAccessTokenSilently({
-          authorizationParams: {
-            audience: "http://localhost:8080",
-            scope: "openid profile email",
-          },
-        });
+        const accessToken = await getAccessTokenSilently();
         const url = `${process.env.REACT_APP_API}/books/secure/currentloans/count`;
         //requestOptions 就是你传给 fetch(url, options) 的第二个参数，用来告诉浏览器这次请求要怎么发
         const requestOptions = {

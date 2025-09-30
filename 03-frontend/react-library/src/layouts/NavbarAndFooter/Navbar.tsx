@@ -38,11 +38,7 @@ export const Navbar = () => {
       // 只有在用户已登录时才执行获取 Token 的操作
       if (isAuthenticated) {
         try {
-          const token = await getAccessTokenSilently({
-            authorizationParams: {
-              audience: "http://localhost:8080",
-            },
-          });
+          const token = await getAccessTokenSilently();
           console.log(
             "Access Token for Postman (auto-logged on auth change):",
             token

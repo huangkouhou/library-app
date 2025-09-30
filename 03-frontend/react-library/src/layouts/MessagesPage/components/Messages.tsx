@@ -20,12 +20,7 @@ export const Messages = () => {
   useEffect(() => {
     const fetchUserMessages = async () => {
       if (isAuthenticated) {
-        const accessToken = await getAccessTokenSilently({
-          authorizationParams: {
-            audience: "http://localhost:8080",
-            scope: "openid profile email",
-          },
-        });
+        const accessToken = await getAccessTokenSilently();
         const url = `${process.env.REACT_APP_API}/messages/search/findByUserEmail?userEmail=${
           user?.email
         }&page=${currentPage - 1}&size=${messagesPerPage}`;
