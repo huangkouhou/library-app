@@ -176,6 +176,25 @@ public class BookService {
         book.get().setCopiesAvailable(book.get().getCopiesAvailable() + 1);
 
         bookRepository.save(book.get());
+
+        //计算逾期天数并罚款not allow a user to build a return book when they don't pay the overdue book
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        Date d1 = sdf.parse(validateCheckout.getReturnDate());
+        Date d2 = sdf.parse(LocalDate.now().toString());
+
+        TimeUnit time = TimeUnit.DAYS;
+
+        double differentInTime = time.convert(d1.getTime() - d2.getTime(), TimeUnit.MILLISECONDS);
+
+        //如果逾期了
+        if (differentInTime < 0) {
+            Payment payment = paymentRepository.findByUserEmail(userEmail);//从数据库里找到该用户的付款记录。
+
+            payment.setAmount(payment.getAmount() + (differentInTime * -1));//differentInTime * -1 = 逾期的天数（取正数）。把逾期天数加到用户的金额（这里默认 1 天 = 1 元/美元/单位）。
+            paymentRepository.save(payment);
+        }
+
         checkoutRepository.deleteById(validateCheckout.getId());
 
         // save a new history object to our database
