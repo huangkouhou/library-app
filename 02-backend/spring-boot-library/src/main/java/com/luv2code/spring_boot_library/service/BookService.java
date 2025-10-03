@@ -13,9 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.luv2code.spring_boot_library.dao.BookRepository;
 import com.luv2code.spring_boot_library.dao.CheckoutRepository;
 import com.luv2code.spring_boot_library.dao.HistoryRepository;
+import com.luv2code.spring_boot_library.dao.PaymentRepository;
 import com.luv2code.spring_boot_library.entity.Book;
 import com.luv2code.spring_boot_library.entity.Checkout;
 import com.luv2code.spring_boot_library.entity.History;
+import com.luv2code.spring_boot_library.entity.Payment;
 import com.luv2code.spring_boot_library.responsemodels.ShelfCurrentLoansResponse;
 
 @Service
@@ -28,13 +30,16 @@ public class BookService {
 
     private HistoryRepository historyRepository;
 
+    private PaymentRepository paymentRepository;
+
     // when we use this service, we can use the book repository and checkout and
     // history repository(constructor dependency)
     public BookService(BookRepository bookRepository, CheckoutRepository checkoutRepository,
-            HistoryRepository historyRepository) {
+            HistoryRepository historyRepository, PaymentRepository paymentRepository) {
         this.bookRepository = bookRepository;
         this.checkoutRepository = checkoutRepository;
         this.historyRepository = historyRepository;
+        this.paymentRepository = paymentRepository;
     }
 
     // checkout function
@@ -47,6 +52,46 @@ public class BookService {
         if (!book.isPresent() || validateCheckout != null || book.get().getCopiesAvailable() <= 0) {
             throw new Exception("Book doesn't exist or already checked out by user");
         }
+
+        //从数据库里查出该用户 userEmail 当前借阅的所有书（Checkout 是用户借书的记录表）
+        List<Checkout> currentBooksCheckOut = checkoutRepository.findBooksByUserEmail(userEmail);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        boolean bookNeedsReturned = false;
+
+        for (Checkout checkout: currentBooksCheckOut){
+            Date d1 = sdf.parse(checkout.getReturnDate());  // 应该归还的日期
+            Date d2 = sdf.parse(LocalDate.now().toString());// 今天的日期
+
+            TimeUnit time = TimeUnit.DAYS;
+
+            double differentInTime = time.convert(d1.getTime() - d2.getTime(), TimeUnit.MILLISECONDS);
+
+            //一旦发现有一本书逾期，就把 bookNeedsReturned = true，然后跳出循环。
+            if (differentInTime < 0){
+                bookNeedsReturned = true;
+                break;
+
+            }
+        }
+        //从数据库里查出该用户的付款信息（欠费、余额等）。
+        Payment userPayment = paymentRepository.findByUserEmail(userEmail);
+
+        //检查用户是否有费用问题：
+        if ((userPayment != null && userPayment.getAmount() > 0) || (userPayment != null && bookNeedsReturned)){
+            throw new Exception("OutStanding fees");
+        }
+
+        //如果用户还没有付款记录（第一次借书），就创建一个付款记录，金额初始为 0.00
+        if (userPayment == null){
+            Payment payment = new Payment();
+            payment.setAmount(00.00);
+            payment.setUserEmail(userEmail);
+            paymentRepository.save(payment);
+        }
+
+
         book.get().setCopiesAvailable(book.get().getCopiesAvailable() - 1);
         bookRepository.save(book.get());
 
