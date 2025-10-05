@@ -64,12 +64,10 @@ public class BookService {
             Date d1 = sdf.parse(checkout.getReturnDate());  // 应该归还的日期
             Date d2 = sdf.parse(LocalDate.now().toString());// 今天的日期
 
-            TimeUnit time = TimeUnit.DAYS;
-
-            double differentInTime = time.convert(d1.getTime() - d2.getTime(), TimeUnit.MILLISECONDS);
+            long diffInMillis = d1.getTime() - d2.getTime();
 
             //一旦发现有一本书逾期，就把 bookNeedsReturned = true，然后跳出循环。
-            if (differentInTime < 0){
+            if (diffInMillis < 0){
                 bookNeedsReturned = true;
                 break;
 
