@@ -34,6 +34,9 @@ export const BookCheckoutPage = () => {
   const [isCheckedOut, setIsCheckedOut] = useState(false);
   const [isLoadingBookCheckedOut, setIsLoadingBookCheckedOut] = useState(true);
 
+  //payment
+  const [displayError, setDisplayError] = useState(false);
+
   const bookId = window.location.pathname.split("/")[2]; //for example localhost:3000/checkout/<bookId>
 
   // ② 在 useEffect 里，根据“依赖数组”去更新状态
@@ -229,20 +232,29 @@ export const BookCheckoutPage = () => {
 
   //checkoutBook function
   async function checkoutBook() {
-    const accessToken = await getAccessTokenSilently();
-    const url = `${process.env.REACT_APP_API}/books/secure/checkout?bookId=${book?.id}`;
-    const requestOptions = {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
+    try{
+      const accessToken = await getAccessTokenSilently();
+      const url = `${process.env.REACT_APP_API}/books/secure/checkout?bookId=${book?.id}`;
+      const requestOptions = {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
     };
     const checkoutResponse = await fetch(url, requestOptions);
     if (!checkoutResponse.ok) {
+      setDisplayError(true);
       throw new Error("Something went wrong!");
     }
+    setDisplayError(false);
     setIsCheckedOut(true);
+
+  } catch (error){
+    console.error("Network or server error:", error);
+    setDisplayError(true); 
+    }
+
   }
 
   //submit review function
@@ -276,6 +288,11 @@ export const BookCheckoutPage = () => {
   return (
     <div>
       <div className="container d-none d-lg-block">
+        {displayError && <div className="alert alert-danger mt-3" role='alert'>
+            Please pay outstanding fees and/or return late book(s).
+        </div>
+        }
+
         {/*小于 lg(992px) 隐藏（d-none），lg 及以上显示为块级（d-lg-block）。用途：只在「桌面端」显示的部分。*/}
         <div className="row mt-5">
           <div className="col-sm-2 col-md-2">
@@ -313,6 +330,10 @@ export const BookCheckoutPage = () => {
         <hr />
       </div>
       <div className="container d-lg-none mt-5">
+        {displayError && <div className="alert alert-danger mt-3" role='alert'>
+            Please pay outstanding fees and/or return late book(s).
+        </div>
+        }
         {/*lg 及以上隐藏，小于 lg 显示（保持默认 display）。用途：只在「手机/平板」显示的部分。*/}
         <div className="d-flex justify-content-center align-items-center">
           {book?.img ? (
