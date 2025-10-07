@@ -1,7 +1,7 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { useEffect, useState } from 'react';
 import { SpinnerLoading } from '../Utils/SpinnerLoading';
-import { CardElement } from '@stripe/react-stripe-js';
+import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { Link } from 'react-router-dom';
 
 export const PaymentPage = () => {
@@ -44,6 +44,86 @@ export const PaymentPage = () => {
 
     fetchFees();
     }, [isAuthenticated, getAccessTokenSilently]);
+
+    const elements = useElements();
+    const stripe = useStripe();
+
+    async function checkout() {
+        if (!stripe || !elements || !elements.getElement(CardElement)) {
+            return;
+        }
+
+        setSubmitDisabled(true);
+
+        try {
+            const accessToken = await getAccessTokenSilently();
+
+            // ✅ 直接使用普通对象构造请求体，而不是 new PaymentInfoRequest
+            const paymentInfo = {
+                amount: Math.round(fees * 100),
+                currency: 'USD',
+                userEmail: user?.email,  // 从 Auth0 的 user 对象中读取
+            };
+
+            const url = `https://localhost:8443/api/payment/secure/payment-intent`;
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify(paymentInfo),
+            };
+
+            const stripeResponse = await fetch(url, requestOptions);
+            if (!stripeResponse.ok) {
+                throw new Error('Something went wrong while creating payment intent!');
+            }
+
+            const stripeResponseJson = await stripeResponse.json();
+
+            const result = await stripe.confirmCardPayment(stripeResponseJson.client_secret, {
+                payment_method: {
+                    card: elements.getElement(CardElement)!,
+                    billing_details: {
+                        email: user?.email || undefined,  // 如果没有 email 就传 undefined
+                    },
+                },
+            }, { handleActions: false });
+
+            if (result.error) {
+                alert('There was an error with your payment.');
+                setSubmitDisabled(false);
+                return;
+            }
+
+            // ✅ 如果支付成功，通知后端更新状态
+            const completeUrl = `https://localhost:8443/api/payment/secure/payment-complete`;
+            const completeOptions = {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`,
+                },
+            };
+
+            const completeResponse = await fetch(completeUrl, completeOptions);
+            if (!completeResponse.ok) {
+                throw new Error('Something went wrong while completing the payment!');
+            }
+
+            setFees(0);
+            setHttpError(false);
+            setSubmitDisabled(false);
+            alert('Payment completed successfully!');
+
+        } catch (error: any) {
+            setHttpError(true);
+            setSubmitDisabled(false);
+            console.error(error);
+        }
+    }
+
 
 
     if (loadingFees){
