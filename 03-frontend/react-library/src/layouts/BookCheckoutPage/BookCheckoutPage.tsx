@@ -251,7 +251,6 @@ export const BookCheckoutPage = () => {
     setIsCheckedOut(true);
 
   } catch (error){
-    console.error("Network or server error:", error);
     setDisplayError(true); 
     }
 

@@ -101,6 +101,14 @@ export const Navbar = () => {
               </li>
             )}
 
+            {isAuthenticated && (
+              <li className="nav-item">
+                <NavLink className="nav-link" to={"/fees"}>
+                  Pay fees
+                </NavLink>
+              </li>
+            )}
+
             {isAuthenticated && roles?.some(r => r.toLowerCase() === "admin") && (
               <li className="nav-item">
                 <NavLink className="nav-link" to="/admin">
