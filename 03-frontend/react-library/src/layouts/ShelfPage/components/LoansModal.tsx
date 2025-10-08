@@ -14,12 +14,14 @@ export const LoansModal: React.FC<{
           ? `mobilemodal${props.shelfCurrentLoan.book.id}`
           : `modal${props.shelfCurrentLoan.book.id}`
       }
-      data-bs-backdrop="static"
-      data-bs-keyboard="false"
-      aria-labelledby="staticBackdropLabel"
-      aria-hidden="true"
-      key={props.shelfCurrentLoan.book.id}
+    role="dialog"
+    aria-modal="true"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    aria-labelledby="staticBackdropLabel"
+        key={props.shelfCurrentLoan.book.id}
     >
+
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">

@@ -81,7 +81,6 @@ export const PaymentPage = () => {
             }
 
             const stripeResponseJson = await stripeResponse.json();
-
             const result = await stripe.confirmCardPayment(stripeResponseJson.client_secret, {
                 payment_method: {
                     card: elements.getElement(CardElement)!,
@@ -92,9 +91,8 @@ export const PaymentPage = () => {
             }, { handleActions: false });
 
             if (result.error) {
-                alert('There was an error with your payment.');
-                setSubmitDisabled(false);
-                return;
+                setSubmitDisabled(false)
+                alert('There was an error with your payment.')
             }
 
             // ✅ 如果支付成功，通知后端更新状态
@@ -148,7 +146,8 @@ export const PaymentPage = () => {
                 <div className='card-body'>
                     <h5 className='card-title mb-3'>Credit Card</h5>
                     <CardElement id='card-element'/>
-                    <button disabled={submitDisabled} type='button' className='btn btn-md main-color text-white mt-3'>
+                    <button disabled={submitDisabled} type='button' className='btn btn-md main-color text-white mt-3'
+                        onClick={checkout}>
                         Pay fees
                     </button>
                 </div>
