@@ -232,7 +232,7 @@ export const BookCheckoutPage = () => {
 
   //checkoutBook function
   async function checkoutBook() {
-    try{
+    try {
       const accessToken = await getAccessTokenSilently();
       const url = `${process.env.REACT_APP_API}/books/secure/checkout?bookId=${book?.id}`;
       const requestOptions = {
@@ -241,19 +241,17 @@ export const BookCheckoutPage = () => {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
-    };
-    const checkoutResponse = await fetch(url, requestOptions);
-    if (!checkoutResponse.ok) {
+      };
+      const checkoutResponse = await fetch(url, requestOptions);
+      if (!checkoutResponse.ok) {
+        setDisplayError(true);
+        throw new Error("Something went wrong!");
+      }
+      setDisplayError(false);
+      setIsCheckedOut(true);
+    } catch (error) {
       setDisplayError(true);
-      throw new Error("Something went wrong!");
     }
-    setDisplayError(false);
-    setIsCheckedOut(true);
-
-  } catch (error){
-    setDisplayError(true); 
-    }
-
   }
 
   //submit review function
@@ -287,16 +285,26 @@ export const BookCheckoutPage = () => {
   return (
     <div>
       <div className="container d-none d-lg-block">
-        {displayError && <div className="alert alert-danger mt-3" role='alert'>
+        {displayError && (
+          <div className="alert alert-danger mt-3" role="alert">
             Please pay outstanding fees and/or return late book(s).
-        </div>
-        }
+          </div>
+        )}
 
         {/*小于 lg(992px) 隐藏（d-none），lg 及以上显示为块级（d-lg-block）。用途：只在「桌面端」显示的部分。*/}
         <div className="row mt-5">
           <div className="col-sm-2 col-md-2">
             {book?.img ? (
-              <img src={book?.img} width="226" height="349" alt="Book" />
+              <img
+                src={
+                  book.img.startsWith("data:image")
+                    ? book.img
+                    : `data:image/png;base64,${book.img}`
+                }
+                width="226"
+                height="349"
+                alt="Book"
+              />
             ) : (
               <img
                 src={require("./../../Images/BooksImages/book-luv2code-1000.png")}
@@ -329,10 +337,11 @@ export const BookCheckoutPage = () => {
         <hr />
       </div>
       <div className="container d-lg-none mt-5">
-        {displayError && <div className="alert alert-danger mt-3" role='alert'>
+        {displayError && (
+          <div className="alert alert-danger mt-3" role="alert">
             Please pay outstanding fees and/or return late book(s).
-        </div>
-        }
+          </div>
+        )}
         {/*lg 及以上隐藏，小于 lg 显示（保持默认 display）。用途：只在「手机/平板」显示的部分。*/}
         <div className="d-flex justify-content-center align-items-center">
           {book?.img ? (
