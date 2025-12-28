@@ -229,4 +229,9 @@ public class BookService {
         }
     }
 
+    public List<History> shelfHistory(String userEmail) {
+        // 调用 Repository 去数据库查数据
+        return historyRepository.findByUserEmail(userEmail);
+    }
+
 }

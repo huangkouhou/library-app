@@ -13,7 +13,7 @@ import com.luv2code.spring_boot_library.entity.Review;
 @Configuration
 public class MyDataRestConfig implements RepositoryRestConfigurer{
 
-    private String theAllowedOrigins = "https://localhost:3000";
+    private String theAllowedOrigins = "http://localhost:3000";
 
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, 

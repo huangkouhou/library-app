@@ -19,7 +19,6 @@ export const LoansModal: React.FC<{
     data-bs-backdrop="static"
     data-bs-keyboard="false"
     aria-labelledby="staticBackdropLabel"
-        key={props.shelfCurrentLoan.book.id}
     >
 
       <div className="modal-dialog">

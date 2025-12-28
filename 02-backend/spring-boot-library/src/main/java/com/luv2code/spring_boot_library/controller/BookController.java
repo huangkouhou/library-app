@@ -18,7 +18,7 @@ import com.luv2code.spring_boot_library.entity.Book;
 import com.luv2code.spring_boot_library.responsemodels.ShelfCurrentLoansResponse;
 import com.luv2code.spring_boot_library.service.BookService;
 
-@CrossOrigin("https://localhost:3000")
+@CrossOrigin("http://localhost:3000")
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
@@ -26,7 +26,7 @@ public class BookController {
     private BookService bookService;
 
     // 自定义命名空间的 email claim（与 Auth0 Action 中保持一致）
-    private static final String EMAIL_CLAIM = "https://library-app.local/email";
+    private static final String EMAIL_CLAIM = "http://localhost:3000/email";
 
     public BookController(BookService bookService) {
         this.bookService = bookService;
@@ -101,5 +101,18 @@ public class BookController {
         
         bookService.renewLoan(userEmail, bookId);
     }
+
+    @GetMapping("/secure/history")
+    public List<com.luv2code.spring_boot_library.entity.History> shelfHistories(@AuthenticationPrincipal Jwt jwt) throws Exception {
+        String userEmail = jwt.getClaimAsString(EMAIL_CLAIM);
+        
+        if (userEmail == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User email is missing");
+        }
+
+        return bookService.shelfHistory(userEmail);
+    }
+       
+   
 
 }

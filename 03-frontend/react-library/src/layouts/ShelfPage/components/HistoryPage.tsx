@@ -6,7 +6,7 @@ import { SpinnerLoading } from "../../Utils/SpinnerLoading";
 import { Link } from "react-router-dom";
 
 export const HistoryPage = () => {
-  const { isAuthenticated, user } = useAuth0();
+  const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const [httpError, setHttpError] = useState(null);
 
@@ -17,15 +17,19 @@ export const HistoryPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
-  useEffect(() => {
+useEffect(() => {
     const fetchUserHistory = async () => {
       if (isAuthenticated) {
-        const url = `${process.env.REACT_APP_API}/histories/search/findBooksByUserEmail?userEmail=${
-          user?.email
-        }&page=${currentPage - 1}&size=5`;
+        const accessToken = await getAccessTokenSilently();
+        
+        // 1️⃣ 修改 URL：指向我们在 BookController 新写的 secure 接口
+        // 注意：这里不需要传 userEmail，也不需要 page/size 参数（因为后端目前返回的是全量 List）
+        const url = `${process.env.REACT_APP_API}/books/secure/history`;
+
         const requestOptions = {
           method: "GET",
           headers: {
+            Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
         };
@@ -35,8 +39,18 @@ export const HistoryPage = () => {
         }
         const historyResponseJson = await historyResponse.json();
 
-        setHistories(historyResponseJson._embedded.histories);
-        setTotalPages(historyResponseJson.page.totalPages);
+        // 2️⃣ 修改解析逻辑：后端现在直接返回数组，不是 _embedded
+        if (Array.isArray(historyResponseJson)) {
+            setHistories(historyResponseJson);
+        } else if (historyResponseJson._embedded) {
+            // 保留这行是为了兼容旧逻辑（万一后端没生效）
+            setHistories(historyResponseJson._embedded.histories);
+        }
+        
+        // 3️⃣ 暂时禁用分页计算
+        // 因为我们后端为了修复 Bug 暂时改成了返回 List，没有 page 信息了。
+        // 这里设为 0 或 1，防止底部分页组件报错或显示错误的页数。
+        setTotalPages(1);
       }
       setIsLoadingHistory(false);
     };
@@ -44,7 +58,7 @@ export const HistoryPage = () => {
       setIsLoadingHistory(false);
       setHttpError(error.message);
     });
-  }, [isAuthenticated, user, currentPage]);
+  }, [isAuthenticated, getAccessTokenSilently, user, currentPage]);
 
   if (isLoadingHistory) {
     return <SpinnerLoading />;

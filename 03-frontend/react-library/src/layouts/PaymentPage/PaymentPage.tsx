@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 export const PaymentPage = () => {
 
     const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();//从 Auth0 导入 user 对象
-    const [httpError, setHttpError] = useState(false);
+    const [httpError, setHttpError] = useState<string | null>(null);
     const [submitDisabled, setSubmitDisabled] = useState(false);
     const [fees, setFees] = useState(0);
     const [loadingFees, setLoadingFees] = useState(true);
@@ -48,7 +48,7 @@ export const PaymentPage = () => {
     const elements = useElements();
     const stripe = useStripe();
 
-    async function checkout() {
+async function checkout() {
         if (!stripe || !elements || !elements.getElement(CardElement)) {
             return;
         }
@@ -57,15 +57,13 @@ export const PaymentPage = () => {
 
         try {
             const accessToken = await getAccessTokenSilently();
-
-            // ✅ 直接使用普通对象构造请求体，而不是 new PaymentInfoRequest
             const paymentInfo = {
                 amount: Math.round(fees * 100),
                 currency: 'USD',
-                userEmail: user?.email,  // 从 Auth0 的 user 对象中读取
+                userEmail: user?.email,
             };
 
-            const url = `https://localhost:8443/api/payment/secure/payment-intent`;
+            const url = `http://localhost:8443/api/payment/secure/payment-intent`;
             const requestOptions = {
                 method: 'POST',
                 headers: {
@@ -85,18 +83,18 @@ export const PaymentPage = () => {
                 payment_method: {
                     card: elements.getElement(CardElement)!,
                     billing_details: {
-                        email: user?.email || undefined,  // 如果没有 email 就传 undefined
+                        email: user?.email || undefined,
                     },
                 },
             }, { handleActions: false });
 
             if (result.error) {
-                setSubmitDisabled(false)
-                alert('There was an error with your payment.')
+                setSubmitDisabled(false);
+                alert('There was an error with your payment.');
+                return; 
             }
 
-            // ✅ 如果支付成功，通知后端更新状态
-            const completeUrl = `https://localhost:8443/api/payment/secure/payment-complete`;
+            const completeUrl = `http://localhost:8443/api/payment/secure/payment-complete`;
             const completeOptions = {
                 method: 'PUT',
                 headers: {
@@ -111,17 +109,16 @@ export const PaymentPage = () => {
             }
 
             setFees(0);
-            setHttpError(false);
+            setHttpError(null);
             setSubmitDisabled(false);
             alert('Payment completed successfully!');
 
         } catch (error: any) {
-            setHttpError(true);
+            setHttpError(error.message || 'Something went wrong with the payment.'); 
             setSubmitDisabled(false);
             console.error(error);
         }
     }
-
 
 
     if (loadingFees){

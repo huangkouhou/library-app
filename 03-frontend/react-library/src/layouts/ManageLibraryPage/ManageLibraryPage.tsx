@@ -11,6 +11,8 @@ export const ManageLibraryPage = () => {
   const [roles, setRoles] = useState<string[] | null>(null); // set roles to null initially
   const [loading, setLoading] = useState(true); // Loading state to handle async data
 
+  const [activeTab, setActiveTab] = useState('addBook');
+
   const [changeQuantityOfBooksClick, setChangeQuantityOfBooksClick] =
     useState(false);
   const [messagesClick, setMessagesClick] = useState(false);
@@ -18,7 +20,7 @@ export const ManageLibraryPage = () => {
   useEffect(() => {
     const fetchRoles = async () => {
     const claims = await getIdTokenClaims();
-    const fetchedRoles = claims?.["https://library-app.local/roles"] ?? [];
+    const fetchedRoles = claims?.["http://localhost:3000/roles"] ?? [];
     setRoles(fetchedRoles);
     setLoading(false);//set loading to false once roles are loaded
     };
@@ -54,42 +56,30 @@ export const ManageLibraryPage = () => {
         <h3>Manage Library</h3>
         <nav>
           <div className="nav nav-tabs" id="nav-tab" role="tablist">
-            <button
-              onClick={addBookClickFunction}
-              className="nav-link active"
+          <button
+              onClick={() => setActiveTab('addBook')}
+              className={`nav-link ${activeTab === 'addBook' ? 'active' : ''}`}
               id="nav-add-book-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#nav-add-book"
-              type="button"
-              role="tab"
-              aria-controls="nav-add-book"
-              aria-selected="false"
+              type="button" role="tab" aria-controls="nav-add-book"
+              aria-selected={activeTab === 'addBook'}
             >
               Add new book
             </button>
             <button
-              onClick={changeQuantityOfBooksClickFunction}
-              className="nav-link"
+              onClick={() => setActiveTab('quantity')}
+              className={`nav-link ${activeTab === 'quantity' ? 'active' : ''}`}
               id="nav-quantity-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#nav-quantity"
-              type="button"
-              role="tab"
-              aria-controls="nav-add-book"
-              aria-selected="true"
+              type="button" role="tab" aria-controls="nav-quantity"
+              aria-selected={activeTab === 'quantity'}
             >
               Change quantity
             </button>
             <button
-              onClick={messagesClickFunction}
-              className="nav-link"
+              onClick={() => setActiveTab('messages')}
+              className={`nav-link ${activeTab === 'messages' ? 'active' : ''}`}
               id="nav-messages-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#nav-messages"
-              type="button"
-              role="tab"
-              aria-controls="nav-messages"
-              aria-selected="false"
+              type="button" role="tab" aria-controls="nav-messages"
+              aria-selected={activeTab === 'messages'}
             >
               Messages
             </button>
@@ -97,28 +87,22 @@ export const ManageLibraryPage = () => {
         </nav>
         <div className="tab-content" id="nav-tabContent">
           <div
-            className="tab-pane fade show active"
-            id="nav-add-book"
-            role="tabpanel"
-            aria-labelledby="nav-add-book-tab"
+            className={`tab-pane fade ${activeTab === 'addBook' ? 'show active' : ''}`}
+            id="nav-add-book" role="tabpanel" aria-labelledby="nav-add-book-tab"
           >
             <AddNewBook />
           </div>
           <div
-            className="tab-pane fade"
-            id="nav-quantity"
-            role="tabpanel"
-            aria-labelledby="nav-quantity-tab"
+            className={`tab-pane fade ${activeTab === 'quantity' ? 'show active' : ''}`}
+            id="nav-quantity" role="tabpanel" aria-labelledby="nav-quantity-tab"
           >
-            {changeQuantityOfBooksClick ? <ChangeQuantityOfBooks /> : <></>}
+            {activeTab === 'quantity' ? <ChangeQuantityOfBooks /> : null}
           </div>
           <div
-            className="tab-pane fade"
-            id="nav-messages"
-            role="tabpanel"
-            aria-labelledby="nav-messages-tab"
+            className={`tab-pane fade ${activeTab === 'messages' ? 'show active' : ''}`}
+            id="nav-messages" role="tabpanel" aria-labelledby="nav-messages-tab"
           >
-            {messagesClick ? <AdminMessages /> : <></>}
+            {activeTab === 'messages' ? <AdminMessages /> : null}
           </div>
         </div>
       </div>
@@ -126,4 +110,4 @@ export const ManageLibraryPage = () => {
   );
 };
 
-//const NS = 'https://library-app.local';
+//const NS = 'http://localhost:3000';

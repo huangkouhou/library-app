@@ -17,7 +17,7 @@ import com.luv2code.spring_boot_library.service.PaymentService;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 
-@CrossOrigin("https://localhost:3000")
+@CrossOrigin("http://localhost:3000")
 @RestController
 @RequestMapping("/api/payment/secure")
 public class PaymentController {
@@ -25,7 +25,7 @@ public class PaymentController {
     private PaymentService paymentService;
 
     // 自定义命名空间的 email claim（与 Auth0 Action 中保持一致）
-    private static final String EMAIL_CLAIM = "https://library-app.local/email";
+    private static final String EMAIL_CLAIM = "http://localhost:3000/email";
 
     public PaymentController(PaymentService paymentService){
         this.paymentService = paymentService;

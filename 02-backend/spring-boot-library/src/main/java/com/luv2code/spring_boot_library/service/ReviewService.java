@@ -3,6 +3,7 @@ package com.luv2code.spring_boot_library.service;
 import java.time.LocalDate;
 import java.sql.Date;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +12,7 @@ import com.luv2code.spring_boot_library.entity.Review;
 import com.luv2code.spring_boot_library.requestmodels.ReviewRequest;
 
 @Service
+@Profile("dev")
 @Transactional
 public class ReviewService {
 

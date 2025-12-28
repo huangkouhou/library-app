@@ -3,6 +3,7 @@
         "appuser",
         "byuser",
         "checkoutlist",
+        "Configdev",
         "Configurer",
         "currentloans",
         "ischeckedout",
@@ -13,5 +14,7 @@
         "responsemodels",
         "reviewlist",
         "springframework"
-    ]
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.compile.nullAnalysis.mode": "automatic"
 }

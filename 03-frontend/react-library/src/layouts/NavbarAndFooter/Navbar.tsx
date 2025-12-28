@@ -25,7 +25,7 @@ export const Navbar = () => {
         return;
       }
       const claims = await getIdTokenClaims();
-      const fetchedRoles = claims?.["https://library-app.local/roles"] ?? [];
+      const fetchedRoles = claims?.["http://localhost:3000/roles"] ?? [];
       setRoles(fetchedRoles);
       setLoading(false);
     };

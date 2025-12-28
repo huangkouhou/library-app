@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.luv2code.spring_boot_library.requestmodels.ReviewRequest;
 import com.luv2code.spring_boot_library.service.ReviewService;
 
-@CrossOrigin("https://localhost:3000")
+@CrossOrigin("http://localhost:3000")
 @RestController
 @RequestMapping("/api/reviews")
 public class ReviewController {
@@ -23,7 +23,7 @@ public class ReviewController {
     private ReviewService reviewService;
 
     // 自定义命名空间的 email claim（与 Auth0 Action 中保持一致）
-    private static final String EMAIL_CLAIM = "https://library-app.local/email";
+    private static final String EMAIL_CLAIM = "http://localhost:3000/email";
 
     public ReviewController (ReviewService reviewService) {
         this.reviewService = reviewService;

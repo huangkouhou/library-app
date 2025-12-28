@@ -18,14 +18,14 @@ import org.springframework.web.server.ResponseStatusException;
 import com.luv2code.spring_boot_library.requestmodels.AddBookRequest;
 import com.luv2code.spring_boot_library.service.AdminService;
 
-@CrossOrigin("https://localhost:3000")
+@CrossOrigin("http://localhost:3000")
 @RestController
 @RequestMapping("/api/admin/secure")
 public class AdminController {
 
     private AdminService adminService;
 
-    private static final String ROLES_CLAIM = "https://library-app.local/roles";
+    private static final String ROLES_CLAIM = "http://localhost:3000/roles";
 
     public AdminController(AdminService adminService){
         this.adminService = adminService;

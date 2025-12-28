@@ -171,6 +171,7 @@ export const Loans = () => {
                 </div>
                 <hr />
                 <LoansModal
+                  key={shelfCurrentLoan.book.id}
                   shelfCurrentLoan={shelfCurrentLoan}
                   mobile={false}
                   returnBook={returnBook}
@@ -263,6 +264,7 @@ export const Loans = () => {
                 </div>
                 <hr />
                 <LoansModal
+                  key={shelfCurrentLoan.book.id}
                   shelfCurrentLoan={shelfCurrentLoan}
                   mobile={true}
                   returnBook={returnBook}
