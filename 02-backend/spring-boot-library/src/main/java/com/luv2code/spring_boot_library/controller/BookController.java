@@ -18,7 +18,7 @@ import com.luv2code.spring_boot_library.entity.Book;
 import com.luv2code.spring_boot_library.responsemodels.ShelfCurrentLoansResponse;
 import com.luv2code.spring_boot_library.service.BookService;
 
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "https://library.penghuang.dev"})
 @RestController
 @RequestMapping("/api/books")
 public class BookController {

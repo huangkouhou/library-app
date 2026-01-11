@@ -9,7 +9,7 @@ import { BookCheckoutPage } from "./layouts/BookCheckoutPage/BookCheckoutPage";
 
 //Auth
 import { Auth0Provider, withAuthenticationRequired } from "@auth0/auth0-react";
-import { auth0Configdev } from "./lib/auth0Configdev";
+import { auth0Config } from "./lib/auth0Configprod";
 import LoginPage from "./Auth/LoginPage";
 import { ReviewListPage } from './layouts/BookCheckoutPage/ReviewListPage/ReviewListPage';
 import { ShelfPage } from './layouts/ShelfPage/ShelfPage';
@@ -26,12 +26,12 @@ const Auth0ProviderWithHistory = ({ children }: { children: React.ReactNode}) =>
 
   return (
     <Auth0Provider
-      domain={auth0Configdev.issuer}
-      clientId={auth0Configdev.clientId}
+      domain={auth0Config.issuer}
+      clientId={auth0Config.clientId}
       authorizationParams={{
-        redirect_uri: auth0Configdev.redirectUri,
-        audience: auth0Configdev.audience,
-        scope: auth0Configdev.scope,
+        redirect_uri: auth0Config.redirectUri,
+        audience: auth0Config.audience,
+        scope: auth0Config.scope,
       }} 
        onRedirectCallback={onRedirectCallback}
     >

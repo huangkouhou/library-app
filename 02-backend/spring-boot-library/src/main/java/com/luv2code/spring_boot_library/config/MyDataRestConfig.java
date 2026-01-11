@@ -13,7 +13,7 @@ import com.luv2code.spring_boot_library.entity.Review;
 @Configuration
 public class MyDataRestConfig implements RepositoryRestConfigurer{
 
-    private String theAllowedOrigins = "http://localhost:3000";
+    //private String theAllowedOrigins = "http://localhost:3000";
 
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, 
@@ -34,7 +34,7 @@ public class MyDataRestConfig implements RepositoryRestConfigurer{
 
         /*Configure CORS Mapping*/
         cors.addMapping(config.getBasePath() + "/**")
-                        .allowedOrigins(theAllowedOrigins);
+                        .allowedOrigins("http://localhost:3000", "https://library.penghuang.dev");
     }
 
     private void disableHttpMethods(Class<?> domainType, 

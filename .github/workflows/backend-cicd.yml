@@ -1,0 +1,68 @@
+name: Backend CD to OCI
+
+on:
+  push:
+    branches: [ "feature/cloud-deploy" ]
+    paths:
+      - '02-backend/spring-boot-library/**' # 只监听后端修改
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      # 1. 设置 QEMU (为了能构建 ARM64 镜像)
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      # 2. 设置 Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # 3. 登录 Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 4. 构建并推送 (注意 platform 设置)
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: ./02-backend # 指向你的后端文件夹
+          file: ./02-backend/spring-boot-library/Dockerfile # 你的 Dockerfile 位置
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/library-backend:latest
+          # ⚠️ 关键：同时构建 AMD64 和 ARM64，或者只写 linux/arm64
+          platforms: linux/arm64
+
+  deploy:
+    needs: build-and-push # 等构建成功了再部署
+    runs-on: ubuntu-latest
+    steps:
+      # 使用 SSH 远程连接你的 OCI 实例并执行命令
+      - name: Deploy to OCI
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.OCI_HOST }}
+          username: ${{ secrets.OCI_USERNAME }}
+          key: ${{ secrets.OCI_SSH_KEY }}
+          script: |
+            # 这里的命令是在你的 OCI 服务器上执行的
+            
+            # 1. 进入项目目录 (假设你已经在服务器上 git clone 过了)
+            cd /home/ubuntu/library-app 
+            
+            # 2. 拉取最新的代码 (主要是为了更新 docker-compose.yml)
+            git pull origin main
+            
+            # 3. 拉取刚才推送到 Docker Hub 的最新镜像
+            docker-compose pull backend
+            
+            # 4. 重启服务 (只更新 backend)
+            docker-compose up -d backend
+            
+            # 5. 清理没用的旧镜像 (可选)
+            docker image prune -f

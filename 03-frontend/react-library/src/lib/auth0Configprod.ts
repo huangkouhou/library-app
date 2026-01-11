@@ -1,7 +1,7 @@
 export const auth0Config = {
- clientId: 'lx4TIvzInqTqEuauGY8nFElUKOKbzd83',
+ clientId: 'WxbwoijyeWAzM2LRB9pbOs57y5onJtMs',
  issuer: 'dev-tijrtha6cwckmy1o.us.auth0.com',
- audience: "http://localhost:8080",
- redirectUri: "http://localhost:3000/login/callback",
+ audience: "https://library.penghuang.dev",
+ redirectUri: "https://library.penghuang.dev/callback",
  scope: 'openid profile email'
 }

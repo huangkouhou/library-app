@@ -1,0 +1,23 @@
+name: Frontend cicd
+on:
+  push:
+    branches: [ "feature/cloud-deploy" ]
+    paths:
+      - '03-frontend/react-library/**' # 👈 只有前端变动才触发
+
+jobs:
+  build-react:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./03-frontend/react-library # 👈 进入前端子目录
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18' # 或者你用的版本
+    - name: Install Dependencies
+      run: npm install
+    - name: Build
+      run: npm run build

@@ -1,0 +1,71 @@
+version: "3.9"
+
+services:
+  # 1. 数据库服务 (新增)
+  mysqldb:
+    image: mysql:8.0
+    container_name: library-db
+    # ARM 架构必须加这行 (因为你的 OCI 是 Ampere)
+    platform: linux/arm64 
+    environment:
+      MYSQL_ROOT_PASSWORD: 3541275Hh!  
+      MYSQL_DATABASE: reactlibrarydatabase           # 自动建库
+    volumes:
+      - mysql_data:/var/lib/mysql        # 数据持久化，防止重启丢数据
+      # [新增] 把本地的初始化 SQL 挂载到容器的初始化目录
+      - ./db-init/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - library-net
+
+  # 2. 后端服务
+  backend:
+    build: ./02-backend/spring-boot-library
+    container_name: library-backend
+    expose:
+      - "8080" # 只暴露给 Nginx，不暴露给外网
+    environment:
+      # 告诉 Spring Boot 数据库在哪里
+      # 注意：host 必须写上面的服务名 'mysqldb'
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/reactlibrarydatabase?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: rootpassword
+    depends_on:
+      - mysqldb # 确保数据库先启动
+    networks:
+      - library-net
+
+  # 3. 前端服务 (React + 内部 Nginx)
+  frontend:
+    build: ./03-frontend/react-library
+    container_name: library-frontend
+    expose:
+      - "80" # 暴露给网关 Nginx
+    networks:
+      - library-net
+
+  # 4. 网关 Nginx (入口)
+  nginx:
+    image: nginx:alpine
+    container_name: library-gateway
+    ports:
+      - "80:80"
+      - "443:443" # 预留给 HTTPS
+    volumes:
+      # 这里假设你用的是之前包含 events/http 的完整配置
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      # 如果你申请了 SSL 证书，解开下面这行
+      # - /etc/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - library-net
+
+# 定义数据卷
+volumes:
+  mysql_data:
+
+# 定义自定义网络 (推荐做法，DNS 更稳)
+networks:
+  library-net:
+    driver: bridge
