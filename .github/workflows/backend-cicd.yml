@@ -38,7 +38,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: ./02-backend # 指向你的后端文件夹
+          context: ./02-backend/spring-boot-library
           file: ./02-backend/spring-boot-library/Dockerfile # 你的 Dockerfile 位置
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/library-backend:latest
