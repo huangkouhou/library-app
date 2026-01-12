@@ -3,20 +3,20 @@ on:
   push:
     branches: [ "feature/cloud-deploy" ]
     paths:
-      - '03-frontend/react-library/**' # 👈 只有前端变动才触发
+      - '03-frontend/react-library/**' 
 
 jobs:
   build-react:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./03-frontend/react-library # 👈 进入前端子目录
+        working-directory: ./03-frontend/react-library 
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18' # 或者你用的版本
+        node-version: '18' 
     - name: Install Dependencies
       run: npm install
     - name: Build

@@ -18,8 +18,6 @@ RUN mvn clean package -DskipTests
 # ---------- runtime ----------
 FROM eclipse-temurin:17-jre
 WORKDIR /app
-# 这里加个通配符虽然方便，但如果 target 下有多个 jar 会报错
-# 建议明确一点，或者确保 target 下只有一个 jar (Spring Boot 默认也是这样)
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","app.jar"]
