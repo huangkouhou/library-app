@@ -4,7 +4,14 @@ on:
   push:
     branches: [ "feature/cloud-deploy" ]
     paths:
-      - '02-backend/spring-boot-library/**' # 只监听后端修改
+      # 1. 监听后端文件夹
+      - '02-backend/**'
+      
+      # 2. 监听 workflow 配置文件 
+      - '.github/workflows/backend-cicd.yml'
+      
+      # 3. 排除后端文件夹里的 markdown 文档
+      - '!02-backend/**/*.md'
 
 jobs:
   build-and-push:
