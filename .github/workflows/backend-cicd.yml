@@ -59,11 +59,13 @@ jobs:
           script: |
             # 这里的命令是在你的 OCI 服务器上执行的
             
-            # 1. 进入项目目录 (假设你已经在服务器上 git clone 过了)
-            cd /home/ubuntu/library-app 
+            # 1. 进入项目目录 
+            cd /home/opc/library-app
             
-            # 2. 拉取最新的代码 (主要是为了更新 docker-compose.yml)
-            git pull origin main
+            # 2. 确保获取最新代码 (自动识别当前分支)
+            git fetch --all
+            git checkout ${{ github.ref_name }}
+            git pull origin ${{ github.ref_name }}
             
             # 3. 拉取刚才推送到 Docker Hub 的最新镜像
             docker-compose pull backend
