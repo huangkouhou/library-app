@@ -46,7 +46,7 @@ jobs:
           platforms: linux/arm64
 
   deploy:
-    needs: build-and-push # 等构建成功了再部署
+    needs: build-and-push 
     runs-on: ubuntu-latest
     steps:
       # 使用 SSH 远程连接你的 OCI 实例并执行命令
@@ -58,6 +58,7 @@ jobs:
           key: ${{ secrets.OCI_SSH_KEY }}
           script: |
             # 这里的命令是在你的 OCI 服务器上执行的
+            set -e
             
             # 1. 进入项目目录 
             cd /home/opc/library-app
@@ -68,10 +69,10 @@ jobs:
             git pull origin ${{ github.ref_name }}
             
             # 3. 拉取刚才推送到 Docker Hub 的最新镜像
-            docker-compose pull backend
+            sudo docker compose pull backend
             
             # 4. 重启服务 (只更新 backend)
-            docker-compose up -d backend
+            sudo docker compose up -d backend
             
             # 5. 清理没用的旧镜像 (可选)
-            docker image prune -f
+            sudo docker image prune -f
