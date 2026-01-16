@@ -16,12 +16,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @Service
-@Profile("dev")
 @Transactional
 public class PaymentService {
 
