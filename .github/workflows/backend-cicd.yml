@@ -49,30 +49,42 @@ jobs:
     needs: build-and-push 
     runs-on: ubuntu-latest
     steps:
-      # 使用 SSH 远程连接你的 OCI 实例并执行命令
-      - name: Deploy to OCI
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.OCI_HOST }}
-          username: ${{ secrets.OCI_USERNAME }}
-          key: ${{ secrets.OCI_SSH_KEY }}
-          script: |
-            # 这里的命令是在你的 OCI 服务器上执行的
-            set -e
-            
-            # 1. 进入项目目录 
-            cd /home/opc/library-app
-            
-            # 2. 确保获取最新代码 (自动识别当前分支)
-            git fetch --all
-            git checkout ${{ github.ref_name }}
-            git pull origin ${{ github.ref_name }}
-            
-            # 3. 拉取刚才推送到 Docker Hub 的最新镜像
-            sudo docker compose pull backend
-            
-            # 4. 重启服务 (只更新 backend)
-            sudo docker compose up -d backend
-            
-            # 5. 清理没用的旧镜像 (可选)
-            sudo docker image prune -f
+          - name: Deploy to OCI
+            uses: appleboy/ssh-action@master
+            with:
+              host: ${{ secrets.OCI_HOST }}
+              username: ${{ secrets.OCI_USERNAME }}
+              key: ${{ secrets.OCI_SSH_KEY }}
+              # 1. 声明：我要把下面 env 里的这些变量传进 SSH 脚本里
+              envs: STRIPE_KEY_SECRET, MYSQL_PASSWORD, OKTA_ISSUER, OKTA_CLIENT_ID
+              
+              script: |
+                set -e
+                cd /home/opc/library-app
+                
+                # 2. 拉取最新代码
+                git fetch --all
+                git checkout ${{ github.ref_name }}
+                git pull origin ${{ github.ref_name }}
+                
+                # 3. 【核心步骤】生成 .env 文件
+                # 这样做的目的是把 GitHub 的秘密写到服务器本地文件中，供 Docker 读取
+                echo "Generating .env file..."
+                echo "STRIPE_KEY_SECRET=$STRIPE_KEY_SECRET" > .env
+                echo "SPRING_DATASOURCE_PASSWORD=$MYSQL_PASSWORD" >> .env
+                echo "OKTA_OAUTH2_ISSUER=$OKTA_ISSUER" >> .env
+                echo "OKTA_OAUTH2_CLIENT_ID=$OKTA_CLIENT_ID" >> .env
+                # 如果还有其他变量，继续 echo ... >> .env
+                
+                # 4. 拉取镜像并重启
+                # Docker Compose 会自动读取同目录下的 .env 文件
+                sudo docker compose pull backend
+                sudo docker compose up -d backend
+                sudo docker image prune -f
+
+            # 5. 映射：把 GitHub Secrets 的值赋给上面的变量
+            env:
+              STRIPE_KEY_SECRET: ${{ secrets.STRIPE_KEY_SECRET }}
+              MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }} # 假设你在 GitHub 里存的是这个名字
+              OKTA_ISSUER: ${{ secrets.OKTA_OAUTH2_ISSUER }}
+              OKTA_CLIENT_ID: ${{ secrets.OKTA_OAUTH2_CLIENT_ID }}
