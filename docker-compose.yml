@@ -50,19 +50,22 @@ services:
 
   # 4. 网关 Nginx
   nginx:
-    image: nginx:alpine
-    container_name: library-gateway
-    restart: always
-    ports:
-      - "80:80"
- #     - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-      - backend
-      - frontend
-    networks:
-      - library-net
+      image: nginx:alpine
+      container_name: library-gateway
+      restart: always
+      ports:
+        - "80:80"
+        - "443:443"  
+      volumes:
+        - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+        # 👇 新增：把宿主机的证书挂载到容器内部
+        - /etc/letsencrypt/live/library.penghuang.dev/fullchain.pem:/etc/nginx/ssl/fullchain.pem:ro
+        - /etc/letsencrypt/live/library.penghuang.dev/privkey.pem:/etc/nginx/ssl/privkey.pem:ro
+      depends_on:
+        - backend
+        - frontend
+      networks:
+        - library-net
 
 volumes:
   mysql_data:
