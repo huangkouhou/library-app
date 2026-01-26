@@ -26,7 +26,7 @@ public class BookController {
     private BookService bookService;
 
     // 自定义命名空间的 email claim（与 Auth0 Action 中保持一致）
-    private static final String EMAIL_CLAIM = "http://localhost:3000/email";
+    private static final String EMAIL_CLAIM = "https://library.penghuang.dev/email";
 
     public BookController(BookService bookService) {
         this.bookService = bookService;
