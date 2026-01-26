@@ -25,6 +25,7 @@ public class BookController {
 
     private BookService bookService;
 
+    // Force rebuild
     // 自定义命名空间的 email claim（与 Auth0 Action 中保持一致）
     private static final String EMAIL_CLAIM = "https://library.penghuang.dev/email";
 
