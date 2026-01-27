@@ -12,6 +12,11 @@ RUN mvn dependency:go-offline -B
 # 3. 再复制源代码
 COPY src ./src
 
+RUN echo "================ DEBUG START: CHECKING CODE ================" && \
+    ls -R src/main/java/com/luv2code && \
+    cat src/main/java/com/luv2code/spring_boot_library/controller/BookController.java && \
+    echo "================ DEBUG END: CHECKING CODE ================"
+
 # 4. 开始打包 (因为依赖已经有了，这里只编译代码，飞快)
 RUN mvn clean package -DskipTests
 
