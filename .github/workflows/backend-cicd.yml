@@ -41,7 +41,7 @@ jobs:
           context: ./02-backend/spring-boot-library
           file: ./02-backend/spring-boot-library/Dockerfile # 你的 Dockerfile 位置
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/library-backend:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/library-backend:fixed
           # ⚠️ 关键：同时构建 AMD64 和 ARM64，或者只写 linux/arm64
           platforms: linux/arm64
 
