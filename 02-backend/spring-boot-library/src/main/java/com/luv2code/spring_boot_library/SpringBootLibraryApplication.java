@@ -8,8 +8,6 @@ public class SpringBootLibraryApplication {
 
 	public static void main(String[] args) {
 
-		System.out.println(">>> V3.0: FINAL FIX DEPLOYED <<<");
-
 		SpringApplication.run(SpringBootLibraryApplication.class, args);
 	}
 

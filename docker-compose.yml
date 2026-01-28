@@ -18,7 +18,7 @@ services:
 
   # 2. 后端服务
   backend:
-    image: huangkouhou/library-backend:latest
+    image: huangkouhou/library-backend:fixed
     container_name: library-backend
     restart: always
     expose:
@@ -31,6 +31,7 @@ services:
       OKTA_OAUTH2_AUDIENCE: https://library.penghuang.dev
       OKTA_OAUTH2_ISSUER: ${OKTA_OAUTH2_ISSUER}
       OKTA_OAUTH2_CLIENT_ID: ${OKTA_OAUTH2_CLIENT_ID}
+      SPRING_DATA_REST_BASE_PATH: /api
       
     depends_on:
       - mysqldb
