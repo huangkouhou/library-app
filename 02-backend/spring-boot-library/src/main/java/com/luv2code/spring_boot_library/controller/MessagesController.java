@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "https://library.penghuang.dev"})
 @RestController
 @RequestMapping("/api/messages")
 public class MessagesController {
@@ -25,8 +25,8 @@ public class MessagesController {
     private MessagesService messagesService;
 
     // 自定义命名空间的 email claim（与 Auth0 Action 中保持一致）
-    private static final String EMAIL_CLAIM = "http://localhost:3000/email";
-    private static final String ROLES_CLAIM = "http://localhost:3000/roles";
+    private static final String EMAIL_CLAIM = "https://library.penghuang.dev/email";
+    private static final String ROLES_CLAIM = "https://library.penghuang.dev/roles";
 
     public MessagesController(MessagesService messagesService) {
         this.messagesService = messagesService;

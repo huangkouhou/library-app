@@ -34,10 +34,12 @@ public class SecurityConfiguration {
                 .anyRequest().permitAll()
         )
         .oauth2Login(withDefaults())
-        .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()))
+        .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()))//在 Header 里携带 JWT Token 来访问。符合“无状态 (Stateless)”架构
         .cors(withDefaults());
 
         // 关闭 CSRF（仅限纯 API 推荐；若保留 oauth2Login 要谨慎）
+        //如果你做的是 前后端分离的 REST API（比如你现在学的 JSON 接口），通常不需要开启 CSRF 防御。
+        // 因为 REST API 通常不用 Cookie 存 Session，而是用 JWT 或 Header 里的 Token，黑客很难伪造。
         http.csrf(AbstractHttpConfigurer::disable);
 
         // 内容协商
@@ -53,7 +55,10 @@ public class SecurityConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         // 允许的前端来源
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of(
+            "http://localhost:3000",
+            "https://library.penghuang.dev"
+        ));
         // 允许的方法
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         // 允许的请求头

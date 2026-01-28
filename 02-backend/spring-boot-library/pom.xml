@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.luv2code</groupId>
 	<artifactId>spring-boot-library</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>spring-boot-library</name>
 	<description>Spring Boot Application for React</description>
 	<url/>

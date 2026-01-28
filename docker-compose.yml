@@ -1,0 +1,78 @@
+version: "3.9"
+
+services:
+  # 1. 数据库服务
+  mysqldb:
+    image: mysql:8.0
+    container_name: library-db
+    platform: linux/arm64 
+    environment:
+      MYSQL_ROOT_PASSWORD: 3541275Hh!  
+      MYSQL_DATABASE: reactlibrarydatabase
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db-init/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - library-net
+
+
+  # 2. 后端服务
+  backend:
+    image: huangkouhou/library-backend:fixed
+    container_name: library-backend
+    restart: always
+    expose:
+      - "8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/reactlibrarydatabase?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      STRIPE_KEY_SECRET: ${STRIPE_KEY_SECRET}
+      OKTA_OAUTH2_AUDIENCE: https://library.penghuang.dev
+      OKTA_OAUTH2_ISSUER: ${OKTA_OAUTH2_ISSUER}
+      OKTA_OAUTH2_CLIENT_ID: ${OKTA_OAUTH2_CLIENT_ID}
+      SPRING_DATA_REST_BASE_PATH: /api
+      
+    depends_on:
+      - mysqldb
+    networks:
+      - library-net
+
+
+  # 3. 前端服务
+  frontend:
+    build: ./03-frontend/react-library
+    container_name: library-frontend
+    restart: always
+    expose:
+      - "80"
+    volumes:
+          - ./nginx/react.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - library-net
+
+  # 4. 网关 Nginx
+  nginx:
+      image: nginx:alpine
+      container_name: library-gateway
+      restart: always
+      ports:
+        - "80:80"
+        - "443:443"  
+      volumes:
+        - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+        # 👇 新增：把宿主机的证书挂载到容器内部
+        - /etc/letsencrypt/live/library.penghuang.dev/fullchain.pem:/etc/nginx/ssl/fullchain.pem:ro
+        - /etc/letsencrypt/live/library.penghuang.dev/privkey.pem:/etc/nginx/ssl/privkey.pem:ro
+      depends_on:
+        - backend
+        - frontend
+      networks:
+        - library-net
+
+volumes:
+  mysql_data:
+
+networks:
+  library-net:
+    driver: bridge

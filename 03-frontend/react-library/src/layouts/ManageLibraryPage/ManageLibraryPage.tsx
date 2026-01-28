@@ -20,7 +20,7 @@ export const ManageLibraryPage = () => {
   useEffect(() => {
     const fetchRoles = async () => {
     const claims = await getIdTokenClaims();
-    const fetchedRoles = claims?.["http://localhost:3000/roles"] ?? [];
+    const fetchedRoles = claims?.["https://library.penghuang.dev/roles"] ?? [];
     setRoles(fetchedRoles);
     setLoading(false);//set loading to false once roles are loaded
     };
@@ -110,4 +110,4 @@ export const ManageLibraryPage = () => {
   );
 };
 
-//const NS = 'http://localhost:3000';
+

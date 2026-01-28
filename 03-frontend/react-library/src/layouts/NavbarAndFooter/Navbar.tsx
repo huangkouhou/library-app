@@ -25,7 +25,7 @@ export const Navbar = () => {
         return;
       }
       const claims = await getIdTokenClaims();
-      const fetchedRoles = claims?.["http://localhost:3000/roles"] ?? [];
+      const fetchedRoles = claims?.["https://library.penghuang.dev/roles"] ?? [];
       setRoles(fetchedRoles);
       setLoading(false);
     };
@@ -68,7 +68,7 @@ export const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark main-color py-3">
       <div className="container-fluid">
-        <span className="navbar-brand">Luv 2 Read</span>
+        <span className="navbar-brand">Peng's Library</span>
         <button
           className="navbar-toggler"
           type="button"

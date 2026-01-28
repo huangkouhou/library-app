@@ -1,7 +1,6 @@
 package com.luv2code.spring_boot_library.controller;
 
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -13,30 +12,29 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.luv2code.spring_boot_library.entity.Book;
 import com.luv2code.spring_boot_library.responsemodels.ShelfCurrentLoansResponse;
 import com.luv2code.spring_boot_library.service.BookService;
 
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "https://library.penghuang.dev"})
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
 
     private BookService bookService;
 
-    // 自定义命名空间的 email claim（与 Auth0 Action 中保持一致）
-    private static final String EMAIL_CLAIM = "http://localhost:3000/email";
+    // V3.0 Final Fix: Ensure this matches Auth0
+    private static final String EMAIL_CLAIM = "https://library.penghuang.dev/email";
 
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
 
+    // 👇 关键：这个方法之前丢失了，现在补回来！
     @GetMapping("/secure/currentloans")
     public List<ShelfCurrentLoansResponse> currentLoans(@AuthenticationPrincipal Jwt jwt) throws Exception {
-
+        System.out.println(">>> DEBUG: currentLoans endpoint called!"); // 再次加个日志确保万一
         String userEmail = jwt.getClaimAsString(EMAIL_CLAIM);
-
         if (userEmail == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User email is missing");
         }
@@ -46,7 +44,6 @@ public class BookController {
     @GetMapping("/secure/currentloans/count")
     public int currentLoansCount(@AuthenticationPrincipal Jwt jwt) throws Exception {
         String userEmail = jwt.getClaimAsString(EMAIL_CLAIM);
-
         if (userEmail == null){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User email is missing");
         }
@@ -54,65 +51,48 @@ public class BookController {
     }
 
     @GetMapping("/secure/ischeckedout/byuser")
-    public Boolean checkoutBookByUser(@AuthenticationPrincipal Jwt jwt,
-                                      @RequestParam Long bookId) throws Exception {
+    public Boolean checkoutBookByUser(@AuthenticationPrincipal Jwt jwt, @RequestParam Long bookId) throws Exception {
         String userEmail = jwt.getClaimAsString(EMAIL_CLAIM);
-
         if (userEmail == null){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User email is missing");
         }
-
         return bookService.checkoutBookByUser(userEmail, bookId);
     }
 
     @PutMapping("/secure/checkout")
     @ResponseBody
-    public Book checkoutBook(@AuthenticationPrincipal Jwt jwt,
-            @RequestParam Long bookId) throws Exception {
+    public Book checkoutBook(@AuthenticationPrincipal Jwt jwt, @RequestParam Long bookId) throws Exception {
         String userEmail = jwt.getClaimAsString(EMAIL_CLAIM);
-
         if (userEmail == null){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User email is missing");
         }
-
         return bookService.checkoutBook(userEmail, bookId);
     }
 
     @PutMapping("/secure/return")
-    public void returnBook(@AuthenticationPrincipal Jwt jwt,
-            @RequestParam Long bookId) throws Exception {
+    public void returnBook(@AuthenticationPrincipal Jwt jwt, @RequestParam Long bookId) throws Exception {
         String userEmail = jwt.getClaimAsString(EMAIL_CLAIM);
-
         if (userEmail == null){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User email is missing");
         }
-
         bookService.returnBook(userEmail, bookId);
     }
 
     @PutMapping("/secure/renew/loan")
-    public void renewLoan(@AuthenticationPrincipal Jwt jwt,
-            @RequestParam Long bookId) throws Exception {
+    public void renewLoan(@AuthenticationPrincipal Jwt jwt, @RequestParam Long bookId) throws Exception {
         String userEmail = jwt.getClaimAsString(EMAIL_CLAIM);
-
         if (userEmail == null){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User email is missing");
         }
-        
         bookService.renewLoan(userEmail, bookId);
     }
 
     @GetMapping("/secure/history")
     public List<com.luv2code.spring_boot_library.entity.History> shelfHistories(@AuthenticationPrincipal Jwt jwt) throws Exception {
         String userEmail = jwt.getClaimAsString(EMAIL_CLAIM);
-        
         if (userEmail == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User email is missing");
         }
-
         return bookService.shelfHistory(userEmail);
     }
-       
-   
-
 }
