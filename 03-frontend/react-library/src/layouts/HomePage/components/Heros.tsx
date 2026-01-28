@@ -46,7 +46,7 @@ export const Heros = () => {
               <p className="ml-2">
                 Try to check in daily as our collection is always changing! We
                 work nonstop to provide the most accurate book selection
-                possible for our Luv 2 Read students! We are diligent about our
+                possible for our Peng's Library students! We are diligent about our
                 book selection and our books are always going to be our top
                 priority.
               </p>
