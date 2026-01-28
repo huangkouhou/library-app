@@ -25,7 +25,7 @@ public class AdminController {
 
     private AdminService adminService;
 
-    private static final String ROLES_CLAIM = "https://library.penghuang.dev";
+    private static final String ROLES_CLAIM = "https://library.penghuang.dev/roles";
 
     public AdminController(AdminService adminService){
         this.adminService = adminService;
