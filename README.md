@@ -50,6 +50,7 @@
 
 ✨ Features
 👤 User Features
+
 Book Browsing: Pagination and search functionality.
 
 Loan Management: Check out books and view current loans (dynamic availability tracking).
