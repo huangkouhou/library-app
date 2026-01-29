@@ -3,7 +3,7 @@
 ![CI/CD Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![Docker](https://img.shields.io/badge/container-Docker-blue)
 ![Cloud](https://img.shields.io/badge/deployment-Oracle_Cloud-orange)
-![License](https://img.shields.io/badge/license-MIT-green)
+
 
 **Live Demo:** [https://library.penghuang.dev](https://library.penghuang.dev)
 
