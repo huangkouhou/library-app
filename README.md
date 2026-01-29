@@ -82,17 +82,11 @@ Real-time Updates: Changes are immediately reflected in search results.
 You can run the entire infrastructure locally using Docker Compose without installing Java manually.
 
 Clone the repository
-
-Bash
-
 git clone [https://github.com/huangkouhou/library-app.git](https://github.com/huangkouhou/library-app.git)
 cd library-app
 Configure Environment Create a .env file or update docker-compose.yml with your Auth0 and Database credentials.
 
 Run with Docker
-
-Bash
-
 docker-compose up -d --build
 Access the App
 
