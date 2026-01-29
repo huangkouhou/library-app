@@ -49,6 +49,7 @@
 ## 🏗️ Architecture
 
 ✨ Features
+
 👤 User Features
 
 Book Browsing: Pagination and search functionality.
