@@ -48,19 +48,6 @@
 
 ## 🏗️ Architecture
 
-```mermaid
-graph TD
-    User((User)) -->|HTTPS/443| Nginx[Nginx Gateway]
-    Nginx -->|/ (Static)| React[React Frontend Container]
-    Nginx -->|/api (REST)| Boot[Spring Boot Backend Container]
-    Boot -->|SQL| DB[(MySQL Database)]
-    Boot -->|Auth| Auth0[Auth0 Provider]
-    
-    subgraph "CI/CD Pipeline"
-        Code[GitHub Repo] -->|Push| Actions[GitHub Actions]
-        Actions -->|Build & Push| Hub[Docker Hub]
-        Actions -->|SSH & Pull| OCI[Oracle Cloud Instance]
-    end
 ✨ Features
 👤 User Features
 Book Browsing: Pagination and search functionality.
@@ -80,12 +67,19 @@ Inventory Control: Add new books, update quantities, or delete items.
 
 Real-time Updates: Changes are immediately reflected in search results.
 
-📸 Screenshots
+📸 
 1. Landing Page
+   <img width="1761" height="930" alt="截屏2026-01-29 14 46 57" src="https://github.com/user-attachments/assets/729062c4-e803-45cf-93cd-d52f47446717" />
+
 2. Search & Filter
+   <img width="1751" height="922" alt="截屏2026-01-29 14 47 37" src="https://github.com/user-attachments/assets/df0a76be-3ed8-45c4-9878-266890048f3b" />
+
 3. Secure Admin Dashboard
+   <img width="1763" height="791" alt="截屏2026-01-29 14 48 56" src="https://github.com/user-attachments/assets/c20c4062-b9fe-410a-a7dd-f50efde5f401" />
+   
+
 🚀 Getting Started (Local with Docker)
-You can run the entire infrastructure locally using Docker Compose without installing Java or Node.js manually.
+You can run the entire infrastructure locally using Docker Compose without installing Java manually.
 
 Clone the repository
 
