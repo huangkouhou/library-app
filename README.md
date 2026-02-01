@@ -67,19 +67,7 @@ The project is designed with real-world architecture in mind, featuring containe
 
 ---
 
-## 🏗️ System Architecture
-
-```text
-Browser
-  ↓
-Nginx (HTTPS / Reverse Proxy)
-  ├── React Frontend
-  └── Spring Boot API (/api)
-          ↓
-        MySQL
-
-
-👤 User Features
+## 👤 User Features
 📖 Book Browsing & Search
 
 Browse catalog with pagination
@@ -88,7 +76,7 @@ Keyword-based search
 
 Responsive UI optimized for large datasets
 
-📦 Loan Management
+### 📦 Loan Management
 
 Borrow available books
 
@@ -96,13 +84,13 @@ Real-time availability tracking
 
 View current loans with clear status indicators
 
-🕒 Borrowing History
+### 🕒 Borrowing History
 
 Review past borrowed books
 
 Improves transparency and accountability
 
-⭐ Reviews & Ratings
+### ⭐ Reviews & Ratings
 
 Star ratings with written reviews
 
@@ -110,7 +98,7 @@ Reviews visible to all users
 
 Encourages community engagement
 
-💳 Payments (In Progress)
+### 💳 Payments (In Progress)
 
 Late fee payments via Stripe
 
@@ -118,8 +106,8 @@ Secure checkout flow
 
 Designed for future extensions (invoices, refunds)
 
-🛡️ Admin Features
-🔐 Secure Admin Access
+## 🛡️ Admin Features
+### 🔐 Secure Admin Access
 
 Admin-only protected routes
 
@@ -127,7 +115,7 @@ JWT role claims enforced at backend
 
 Strict RBAC implementation
 
-📚 Inventory Management
+### 📚 Inventory Management
 
 Add new books
 
@@ -137,7 +125,7 @@ Remove unavailable items
 
 Real-time inventory consistency
 
-⚡ Real-time Updates
+### ⚡ Real-time Updates
 
 Immediate reflection of changes
 
@@ -145,7 +133,7 @@ No manual refresh required
 
 Smooth admin workflow
 
-💬 User Q&A Management
+### 💬 User Q&A Management
 
 View pending user questions
 
@@ -153,7 +141,7 @@ Respond directly from admin dashboard
 
 Improves support and communication
 
-📸 Screenshots
+## 📸 Screenshots
 1️⃣ Landing Page
 <img width="1761" alt="Landing Page" src="https://github.com/user-attachments/assets/729062c4-e803-45cf-93cd-d52f47446717" />
 2️⃣ Search & Filter
@@ -164,7 +152,7 @@ Improves support and communication
 
 This project runs entirely with Docker Compose.
 
-📦 Prerequisites
+## 📦 Prerequisites
 
 Docker (v20+)
 
@@ -174,35 +162,23 @@ Domain name (for HTTPS in production)
 
 Optional: Let’s Encrypt certificates
 
-🔐 Environment Variables
+## 🔐 Environment Variables
 
 Create a .env file in the root directory:
 
-# Database
+### Database
 SPRING_DATASOURCE_PASSWORD=your_mysql_root_password
 
-# Stripe
+### Stripe
 STRIPE_KEY_SECRET=your_stripe_secret_key
 
-# Okta OAuth
+### Okta OAuth
 OKTA_OAUTH2_ISSUER=https://your-okta-domain/oauth2/default
 OKTA_OAUTH2_CLIENT_ID=your_okta_client_id
 
 
-⚠️ Do not commit .env to version control.
 
-▶️ Run the Application
-git clone https://github.com/huangkouhou/library-app.git
-cd library-app
-docker compose up -d --build
-
-🌐 Access
-
-Frontend: http://localhost
-
-Backend API: http://localhost/api
-
-🔮 Future Improvements
+## 🔮 Future Improvements
 
 Book reservation system
 
@@ -214,7 +190,4 @@ Payment history dashboard
 
 Admin analytics
 
-👨‍💻 Author
 
-Peng Huang
-https://github.com/huangkouhou
