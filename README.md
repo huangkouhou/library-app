@@ -182,18 +182,6 @@ A valid domain name (for HTTPS in production)
 
 (Optional) Let’s Encrypt SSL certificates for HTTPS
 
-📁 Project Structure (Simplified)
-.
-├── docker-compose.yml
-├── .env
-├── db-init/
-│   └── init.sql
-├── nginx/
-│   ├── nginx.conf
-│   └── react.conf
-└── 03-frontend/
-    └── react-library/
-
 🔐 Environment Variables
 
 Create a .env file in the root directory:
