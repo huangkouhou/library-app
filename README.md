@@ -1,65 +1,220 @@
-# 📚 Peng's Library - Full-Stack Library Management System
+# 📚 Peng's Library
+**Full-Stack Library Management System**
 
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
+![CI/CD Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![Docker](https://img.shields.io/badge/container-Docker-blue)
 ![Cloud](https://img.shields.io/badge/deployment-Oracle_Cloud-orange)
-![License](https://img.shields.io/badge/license-MIT-green)
 
-> **A production-ready, cloud-native library management system.**
-
-🌐 **Live Demo:** [https://library.penghuang.dev](https://library.penghuang.dev)
+🌐 **Live Demo:**  
+https://library.penghuang.dev
 
 ---
 
 ## 📖 Overview
 
-**Peng's Library** is a robust full-stack application designed to handle book discovery, borrowing operations, user reviews, and secure administration. 
+**Peng's Library** is a production-ready, full-stack library management system that supports book discovery, borrowing, reviews, admin management, and secure payments.
 
-Unlike simple CRUD demos, this project mimics a **real-world enterprise architecture**. It features full containerization, strict Role-Based Access Control (RBAC), automated CI/CD pipelines, and is deployed on a live cloud infrastructure with a secure Nginx gateway.
+The project is designed with real-world architecture in mind, featuring containerization, role-based access control, CI/CD automation, and cloud deployment.
 
 ---
 
 ## ✨ Key Highlights
 
-* **☁️ Cloud Deployment (OCI)**
-    * Deployed on **Oracle Cloud Infrastructure** (Oracle Linux) simulating a real production environment.
-* **🐳 Full Containerization**
-    * Frontend, Backend, Database, and Gateway are orchestrated via **Docker Compose** for consistent environments.
-* **🌐 Nginx Reverse Proxy & Gateway**
-    * Handles **SSL/HTTPS** termination (Let’s Encrypt).
-    * Routes traffic (`/` → Frontend, `/api` → Backend) to elegantly solve CORS issues.
-* **🔄 CI/CD Automation**
-    * **GitHub Actions** workflow triggers on push to `main`.
-    * Auto-builds & pushes Docker images to Docker Hub.
-    * Auto-deploys to OCI via SSH with zero manual intervention.
-* **🔐 Enterprise Security**
-    * **OAuth2 / OIDC** authentication via Okta/Auth0.
-    * **JWT-based Authorization** with strict RBAC (Role-Based Access Control).
-    * Admin routes are protected at the API level using custom JWT claims.
+- ☁️ **Cloud Deployment (OCI)**  
+  Deployed on Oracle Cloud Infrastructure (Oracle Linux).
+
+- 🐳 **Full Containerization**  
+  Frontend, backend, database, and gateway are fully containerized and orchestrated via **Docker Compose**.
+
+- 🌐 **Nginx Reverse Proxy & API Gateway**
+  - HTTPS termination (Let’s Encrypt)
+  - `/` → Frontend, `/api` → Backend routing
+  - Clean CORS handling and improved performance
+
+- 🔄 **CI/CD with GitHub Actions**
+  - Triggered on push to `main`
+  - Builds and pushes Docker images
+  - Automatic deployment to OCI via SSH
+
+- 🔐 **Enterprise-grade Security**
+  - OAuth2 / OIDC authentication (Okta)
+  - JWT-based **Role-Based Access Control (RBAC)**
+  - Admin role enforced at API level
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- React.js (Hooks, Router)
+- TypeScript
+- Bootstrap (Responsive UI)
+
+### Backend
+- Java 21 & Spring Boot
+- Spring Security (OAuth2 Resource Server)
+- Spring Data JPA & Hibernate
+- Spring Data REST
+- Stripe API (Payments)
+
+### Infrastructure & DevOps
+- Docker & Docker Compose
+- Nginx (Reverse Proxy & Gateway)
+- MySQL 8
+- Oracle Cloud Infrastructure (OCI)
+- GitHub Actions (CI/CD)
+- Certbot (HTTPS)
 
 ---
 
 ## 🏗️ System Architecture
-🛠️ Tech Stack
-Category,Technologies
-Frontend,"React.js (Hooks), TypeScript, Bootstrap 5, Axios"
-Backend,"Java 21, Spring Boot, Spring Security, Spring Data JPA/REST"
-Database,MySQL 8
-DevOps,"Docker, Docker Compose, Nginx, GitHub Actions, OCI"
-Security,"OAuth2 (Okta), JWT, HTTPS (Certbot)"
 
-# Payment
+```text
+Browser
+  ↓
+Nginx (HTTPS / Reverse Proxy)
+  ├── React Frontend
+  └── Spring Boot API (/api)
+          ↓
+        MySQL
+
+
+👤 User Features
+📖 Book Browsing & Search
+
+Browse catalog with pagination
+
+Keyword-based search
+
+Responsive UI optimized for large datasets
+
+📦 Loan Management
+
+Borrow available books
+
+Real-time availability tracking
+
+View current loans with clear status indicators
+
+🕒 Borrowing History
+
+Review past borrowed books
+
+Improves transparency and accountability
+
+⭐ Reviews & Ratings
+
+Star ratings with written reviews
+
+Reviews visible to all users
+
+Encourages community engagement
+
+💳 Payments (In Progress)
+
+Late fee payments via Stripe
+
+Secure checkout flow
+
+Designed for future extensions (invoices, refunds)
+
+🛡️ Admin Features
+🔐 Secure Admin Access
+
+Admin-only protected routes
+
+JWT role claims enforced at backend
+
+Strict RBAC implementation
+
+📚 Inventory Management
+
+Add new books
+
+Update stock quantities
+
+Remove unavailable items
+
+Real-time inventory consistency
+
+⚡ Real-time Updates
+
+Immediate reflection of changes
+
+No manual refresh required
+
+Smooth admin workflow
+
+💬 User Q&A Management
+
+View pending user questions
+
+Respond directly from admin dashboard
+
+Improves support and communication
+
+📸 Screenshots
+1️⃣ Landing Page
+<img width="1761" alt="Landing Page" src="https://github.com/user-attachments/assets/729062c4-e803-45cf-93cd-d52f47446717" />
+2️⃣ Search & Filter
+<img width="1751" alt="Search & Filter" src="https://github.com/user-attachments/assets/df0a76be-3ed8-45c4-9878-266890048f3b" />
+3️⃣ Secure Admin Dashboard
+<img width="1763" alt="Admin Dashboard" src="https://github.com/user-attachments/assets/c20c4062-b9fe-410a-a7dd-f50efde5f401" />
+🚀 Getting Started (Docker)
+
+This project runs entirely with Docker Compose.
+
+📦 Prerequisites
+
+Docker (v20+)
+
+Docker Compose (v2+)
+
+Domain name (for HTTPS in production)
+
+Optional: Let’s Encrypt certificates
+
+🔐 Environment Variables
+
+Create a .env file in the root directory:
+
+# Database
+SPRING_DATASOURCE_PASSWORD=your_mysql_root_password
+
+# Stripe
 STRIPE_KEY_SECRET=your_stripe_secret_key
 
-# Authentication (Okta/Auth0)
-OKTA_OAUTH2_ISSUER=[https://your-domain.okta.com/oauth2/default](https://your-domain.okta.com/oauth2/default)
-OKTA_OAUTH2_CLIENT_ID=your_client_id
-3. Run the ApplicationBash# Clone the repository
-git clone [https://github.com/huangkouhou/library-app.git](https://github.com/huangkouhou/library-app.git)
+# Okta OAuth
+OKTA_OAUTH2_ISSUER=https://your-okta-domain/oauth2/default
+OKTA_OAUTH2_CLIENT_ID=your_okta_client_id
+
+
+⚠️ Do not commit .env to version control.
+
+▶️ Run the Application
+git clone https://github.com/huangkouhou/library-app.git
 cd library-app
-
-# Start services
 docker compose up -d --build
-4. AccessFrontend: http://localhostBackend API: http://localhost/api
 
-👨‍💻 AuthorPeng Huang
+🌐 Access
+
+Frontend: http://localhost
+
+Backend API: http://localhost/api
+
+🔮 Future Improvements
+
+Book reservation system
+
+Notification service (email / in-app)
+
+Recommendation engine
+
+Payment history dashboard
+
+Admin analytics
+
+👨‍💻 Author
+
+Peng Huang
+https://github.com/huangkouhou
