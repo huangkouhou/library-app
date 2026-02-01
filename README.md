@@ -32,7 +32,7 @@
 - **Bootstrap** (Responsive UI)
 
 ### Backend
-- **Java 17 & Spring Boot**
+- **Java 21 & Spring Boot**
 - **Spring Security** (OAuth2 Resource Server)
 - **Spring Data JPA & Hibernate**
 - **Spring Data REST**
@@ -51,23 +51,93 @@
 ✨ Features
 
 👤 User Features
+📖 Book Browsing & Search
 
-Book Browsing: Pagination and search functionality.
+Browse the library catalog with pagination support
 
-Loan Management: Check out books and view current loans (dynamic availability tracking).
+Search books by title and keywords
 
-History: Review past borrowed books.
+Clean and responsive UI for smooth navigation across large datasets
 
-Review System: Leave star ratings and text reviews.
+📦 Loan Management
 
-Payment: (Integration in progress) Pay late fees via Stripe.
+Check out available books directly from the catalog
+
+Real-time availability tracking prevents double borrowing
+
+View all currently borrowed books in one place
+
+Clear status indicators for loaned and available items
+
+🕒 Borrowing History
+
+Access a complete history of previously borrowed books
+
+Helps users track reading activity and past loans
+
+Improves transparency and user accountability
+
+⭐ Review & Rating System
+
+Leave star ratings and written reviews for books
+
+Reviews are visible to other users to support better reading choices
+
+Encourages community interaction and engagement
+
+💳 Payment System (In Progress)
+
+Late fee payment via Stripe integration
+
+Secure and user-friendly checkout experience
+
+Designed for future extensibility (invoices, payment history, refunds)
+
+🌱 Designed for Scalability
+
+Modular feature structure for future expansion
+
+Clear separation between user and admin responsibilities
+
+Ready for enhancements such as notifications, reservations, and recommendations
+
 
 🛡️ Admin Features
-Secure Access: Protected routes requiring Admin role claims in JWT.
+🔐 Secure Access
 
-Inventory Control: Add new books, update quantities, or delete items.
+Admin-only access enforced through protected routes
 
-Real-time Updates: Changes are immediately reflected in search results.
+Authorization based on JWT role claims
+
+Prevents unauthorized users from accessing management functions
+
+📚 Inventory Management
+
+Add new books to the library catalog
+
+Update stock quantities for existing books
+
+Remove books that are no longer available
+
+Ensures accurate and up-to-date inventory control
+
+⚡ Real-time Updates
+
+All inventory changes are reflected immediately
+
+Search results and book listings update without page reload
+
+Provides a seamless and responsive admin experience
+
+💬 User Q&A Management
+
+View pending questions submitted by users
+
+Read user details (email, title, question content)
+
+Submit official admin responses directly from the dashboard
+
+Helps maintain clear communication and user support
 
 📸 
 1. Landing Page
@@ -95,5 +165,47 @@ Access the App
 Frontend: http://localhost:3000 (or configured port)
 
 Backend API: http://localhost:8080/api
+
+💻 Getting Started
+
+This project is fully containerized and runs using Docker Compose, including frontend, backend, database, and Nginx gateway.
+
+📦 Prerequisites
+
+Make sure you have the following installed on your machine or server:
+
+Docker (v20+)
+
+Docker Compose (v2+)
+
+A valid domain name (for HTTPS in production)
+
+(Optional) Let’s Encrypt SSL certificates for HTTPS
+
+📁 Project Structure (Simplified)
+.
+├── docker-compose.yml
+├── .env
+├── db-init/
+│   └── init.sql
+├── nginx/
+│   ├── nginx.conf
+│   └── react.conf
+└── 03-frontend/
+    └── react-library/
+
+🔐 Environment Variables
+
+Create a .env file in the root directory:
+
+# Database
+SPRING_DATASOURCE_PASSWORD=your_mysql_root_password
+
+# Stripe (Payment)
+STRIPE_KEY_SECRET=your_stripe_secret_key
+
+# Okta Authentication
+OKTA_OAUTH2_ISSUER=https://your-okta-domain/oauth2/default
+OKTA_OAUTH2_CLIENT_ID=your_okta_client_id
 
 **Developed by [Peng Huang](https://github.com/huangkouhou)**
